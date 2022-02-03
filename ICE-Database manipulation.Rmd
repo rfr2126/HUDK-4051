@@ -1,0 +1,34 @@
+---
+title: "ICE - Database Manipulation"
+output: html_notebook
+---
+
+This is a notebook that documents my first Individual Coding Exercise. This is the first time ever that I experiment with databases, so I expect some bumps, but I'm OK with it.
+
+I start with [this blog post](https://www.pluralsight.com/blog/software-development/relational-vs-non-relational-databases) comparing relational and non-relational databases. By reading it, I have the impression that the learning curve will be less steep with relational DB, so I choose to work with this type of databases.
+
+Next, I give [this introductory DataCamp course](https://www.datacamp.com/courses/introduction-to-sql) a try. It really feels like another programming language, and the first few steps are quite intuitive.
+
+- Indeed, the **first chapter** went smoothly, and I managed to learn a few basic commands such as `SELECT`, `COUNT`, and `DISTINCT`.
+- **Chapter 2** starts off with the initially counter intuitive `WHERE`.The concept of "wildcards" is quite interesting, plus the name is intriguing ;-)
+- **Chapter 3** introduces the aggregate functions, which I believe can come in handy in data analyses like those with which I'm used.
+- Another syntax trick appears in **Chapter 4**: the use of `ORDER BY` coming after `FROM`
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. The new syntax presented a few challenges, such as the need for citing the variable for every value in `AND` and `OR` statements. 
+
+```{r}
+plot(cars)
+View(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+
+```{r}
+
+```
+
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
