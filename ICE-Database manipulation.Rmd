@@ -1,20 +1,32 @@
 ---
 title: "ICE - Database Manipulation"
-output: html_notebook
+output: html_document
+df_print: paged
+author: Renato Russo
+date: February, 10, 2022
 ---
 
 This is a notebook that documents my first Individual Coding Exercise. This is the first time ever that I experiment with databases, so I expect some bumps, but I'm OK with it.
 
+# Part 1
 I start with [this blog post](https://www.pluralsight.com/blog/software-development/relational-vs-non-relational-databases) comparing relational and non-relational databases. By reading it, I have the impression that the learning curve will be less steep with relational DB, so I choose to work with this type of databases.
 
-Next, I give [this introductory DataCamp course](https://www.datacamp.com/courses/introduction-to-sql) a try. It really feels like another programming language, and the first few steps are quite intuitive.
+# Part 2: "Intro to SQL" DataCamp course
+Next, I gave [this introductory DataCamp course](https://www.datacamp.com/courses/introduction-to-sql) a try. It really feels like another programming language, and the first few steps are quite intuitive.
 
 - Indeed, the **first chapter** went smoothly, and I managed to learn a few basic commands such as `SELECT`, `COUNT`, and `DISTINCT`.
 - **Chapter 2** starts off with the initially counter intuitive `WHERE`.The concept of "wildcards" is quite interesting, plus the name is intriguing ;-)
 - **Chapter 3** introduces the aggregate functions, which I believe can come in handy in data analyses like those with which I'm used.
 - Another syntax trick appears in **Chapter 4**: the use of `ORDER BY` coming after `FROM`
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. The new syntax presented a few challenges, such as the need for citing the variable for every value in `AND` and `OR` statements. 
+![Statement of completion of course on Introduction to SQL.](/Users/renatorusso/Desktop/Ed.D. Instructional Technology and Media/HUDK 4051/HUDK-4051/images/INTROSQL-RussoRenato.png){width=90%}
+
+In general, undertaking this first part of the assignment was easy, although I feel I made a mistake in terms of my learning: because I had a chunk of time available and was eager to understand the basics of SQL, I took the whole DataCamp course all at once, instead of practicing a consistently across a few days. I tend to prefer the latter approach, because I feel I consolidate knowledge better that way. Let's wait and see.
+
+# Part 3: creating an AWS Database
+Following the instructions, it was easy to create the database, although it seems that every step is a little risky, because it feels a little "black-box-y."
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. The new syntax presented a few challenges, such as the` need for citing the variable for every value in `AND` and `OR` statements. 
 
 ```{r}
 plot(cars)
