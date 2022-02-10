@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 # install.packages("dbplyr")
 # install.packages("DBI")
 # install.packages("RMySQL")
@@ -7,27 +6,32 @@
 library(DBI)
 library(RMySQL)
 
-host <- "la-4051.chhrqrpvglpz.us-east-1.rds.amazonaws.com"
+host <- "database-2.cluster-chhrqrpvglpz.us-east-1.rds.amazonaws.com"
 port <- 3306
-dbname <- "la-4051"
+dbname <- "hudk4051"
 user <- "renatorusso"
-password <- "zcUbWvUWRNNN4pg"
-=======
-library(dplyr)
-#install.packages("RMySQL")
-library(RMySQL)
-#install.packages("DBI")
-library(DBI)
-
-host = "la-4051.chhrqrpvglpz.us-east-1.rds.amazonaws.com"
-port = 3306
-dbname = "la-4051"
-user = "renatorusso"
-password = "zcUbWvUWRNNN4pg"
+password <- "Y2JVBr68qQX8AjY"
 
 my_db <- dbConnect(MySQL(), user = user, password = password, dbname = dbname, host = host, port = port)
-#  src_mysql(dbname = dbname, host = host, port = port, user = user, password = password)
->>>>>>> Stashed changes
+my_db
+summary(my_db)
+dbListTables(my_db)
 
-my_db = dbConnect(MySQL(), user = user, password = password, dbname = dbname, 
-                  host = host, port = port)
+#Loading data
+a2sdata <- read.csv("netlogo_events.csv", header = TRUE)
+
+# Writing data to the DB using the DBI package
+dbWriteTable(my_db,"a2sdata", a2sdata)
+
+# Checking if the data has been written to the DB
+dbListTables(my_db)
+
+# Read table in the 
+dbReadTable(my_db, "a2sdata")
+
+# Selecting columns
+dbGetQuery(my_db, "SELECT blockType FROM a2sdata WHERE actionType = 'create block'")
+
+# Combining aggregate functions with WHERE
+View(dbGetQuery(my_db, "SELECT blockType FROM a2sdata WHERE actionType = 'create block'"))
+  
