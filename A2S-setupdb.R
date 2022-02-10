@@ -23,6 +23,8 @@ ACBQ_data <- readxl::read_xlsx("ACBQ/Data_ACBQ.xlsx")
 # Writing data to the DB using the DBI package
 dbWriteTable(my_db,"ACBQ_data", ACBQ_data)
 
+dbRemoveTable(my_db, "a2sdata")
+
 # Checking if the data has been written to the DB
 dbListTables(my_db)
 
