@@ -39,7 +39,7 @@ dbname <- "hudk4051"
 user <- "renatorusso"
 ```
 ```{r, echo=FALSE}
-password <- "Y2JVBr68qQX8AjY"
+password <- ""
 ```
 ```{r}
 
