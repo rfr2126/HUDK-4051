@@ -19,14 +19,13 @@ Next, I gave [this introductory DataCamp course](https://www.datacamp.com/course
 - **Chapter 3** introduces the aggregate functions, which I believe can come in handy in data analyses like those with which I'm used.
 - Another syntax trick appears in **Chapter 4**: the use of `ORDER BY` coming after `FROM`
 
-![Statement of completion of course on Introduction to SQL.](/Users/renatorusso/Desktop/Ed.D./HUDK-4051/images/INTROSQL-RussoRenato.png){width=90%}
+![Statement of completion of course on Introduction to SQL.](images/INTROSQL-RussoRenato.png){width=90%}
 
 In general, undertaking this first part of the assignment was easy, although I feel I made a mistake in terms of my learning: because I had a chunk of time available and was eager to understand the basics of SQL, I took the whole DataCamp course all at once, instead of practicing a consistently across a few days. I tend to prefer the latter approach, because I feel I consolidate knowledge better that way. Let's wait and see.
 
 # Part 3: creating an AWS Database
 Following the instructions, it was easy to create the database, although it seems that every step is a little risky, because it feels a little "black-box-y."
 
-Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Cmd+Shift+Enter*. The new syntax presented a few challenges, such as the` need for citing the variable for every value in `AND` and `OR` statements. 
 
 ```{r}
 library(DBI)
@@ -44,20 +43,22 @@ summary(my_db)
 dbListTables(my_db)
 
 #Loading data
-a2sdata <- read.csv("netlogo_events.csv", header = TRUE)
+ACBQ_data <- readxl::read_xlsx("ACBQ/Data_ACBQ.xlsx")
 
 # Writing data to the DB using the DBI package
-#dbWriteTable(my_db,"a2sdata", a2sdata)
+#dbWriteTable(my_db,"ACBQ_data", ACBQ_data)
 
 # Checking if the data has been written to the DB
 dbListTables(my_db)
 
 # Read table in the 
-dbReadTable(my_db, "a2sdata")
+dbReadTable(my_db, "ACBQ_data")
 
 # Selecting columns
-dbGetQuery(my_db, "SELECT blockType FROM a2sdata WHERE actionType = 'create block'")
+dbGetQuery(my_db, "SELECT ACBQ1 FROM ACBQ_data WHERE gender = '1' LIMIT 10")
 
+# Combining aggregate functions with WHERE
+dbGetQuery(my_db, "SELECT ABCQ FROM ACBQ_data WHERE RealworldCT > 3")
 
 ```
 

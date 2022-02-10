@@ -18,20 +18,20 @@ summary(my_db)
 dbListTables(my_db)
 
 #Loading data
-a2sdata <- read.csv("netlogo_events.csv", header = TRUE)
+ACBQ_data <- readxl::read_xlsx("ACBQ/Data_ACBQ.xlsx")
 
 # Writing data to the DB using the DBI package
-dbWriteTable(my_db,"a2sdata", a2sdata)
+dbWriteTable(my_db,"ACBQ_data", ACBQ_data)
 
 # Checking if the data has been written to the DB
 dbListTables(my_db)
 
 # Read table in the 
-dbReadTable(my_db, "a2sdata")
+dbReadTable(my_db, "ACBQ_data")
 
 # Selecting columns
-dbGetQuery(my_db, "SELECT blockType FROM a2sdata WHERE actionType = 'create block'")
+dbGetQuery(my_db, "SELECT ACBQ1 FROM ACBQ_data WHERE gender = '1' LIMIT 10")
 
 # Combining aggregate functions with WHERE
-View(dbGetQuery(my_db, "SELECT blockType FROM a2sdata WHERE actionType = 'create block'"))
+dbGetQuery(my_db, "SELECT ABCQ FROM ACBQ_data WHERE RealworldCT > 3 LIMIT 10")
   
