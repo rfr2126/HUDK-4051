@@ -9,7 +9,7 @@ date: February, 10, 2022
 This is a notebook that documents my first Individual Coding Exercise. This is the first time ever that I experiment with databases, so I expect some bumps, but I'm OK with it.
 
 # Part 1
-I start with [this blog post](https://www.pluralsight.com/blog/software-development/relational-vs-non-relational-databases) comparing relational and non-relational databases. By reading it, I have the impression that the learning curve will be less steep with relational DB, so I choose to work with this type of databases.
+I start  with [this blog post](https://www.pluralsight.com/blog/software-development/relational-vs-non-relational-databases) comparing relational and non-relational databases. By reading it, I have the impression that the learning curve will be less steep with relational DB, so I choose to work with this type of databases.
 
 # Part 2: "Intro to SQL" DataCamp course
 Next, I gave [this introductory DataCamp course](https://www.datacamp.com/courses/introduction-to-sql) a try. It really feels like another programming language, and the first few steps are quite intuitive.

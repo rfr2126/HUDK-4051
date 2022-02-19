@@ -1,79 +1,119 @@
+# httpuv package needed to run the ytoauth()
+# install.packages("httpuv")
+library(httpuv)
 library(tidyverse)
-library(tidygraph)
+#library(tidygraph)
 library(tuber)
-library(tidytext)
-library(tm) #I use here to remove stop words
+library(tidytext) #used to most text analysis in this project 
+library(tm) #used here to remove stop words
+library(widyr) #used for pairwise count (pairwise_count())
+library(ggraph) #used for the co-occurence chart
+library(igraph) #used for the co-occurence chart
+
 YT_client_id <- "113759878461-gp15t6i0l6v8cms91r1hp2v44que1dip.apps.googleusercontent.com"
 YT_client_secret <- "GOCSPX-"
 
-# use the youtube oauth 
+# use the youtube oauth
 yt_oauth(app_id = YT_client_id,
          app_secret = YT_client_secret,
          token = '')
 
 #Get All the Comments Including Replies 
-comments_YT_turismo <- get_all_comments(video_id = "bdfRebIp00c")
-View(comments_YT_turismo)
-as.data.frame(comments_YT_turismo)
+comments_YT_Nov20 <- get_all_comments(video_id = "bdfRebIp00c")
 
-comments_YT_Nov20 <- comments_YT_turismo
+#just checking if data were imported correctly from YouTube
+View(comments_YT_Nov20)
 
-comments_YT_turismo <- comments_YT_turismo %>% 
+#converting imported data to dataframe
+as.data.frame(comments_YT_Nov20)
+
+#saving a local copy 
+write.csv(comments_YT_Nov20, file = "comments_YT_Nov20.csv") 
+
+# loading local file
+comments_YT_Nov20 <- read_csv("comments_YT_Nov20.csv")
+
+#unnesting tokens, that is, separating each word and assigning each one to a row
+# of the dataframe
+comments_YT_Nov20 <- comments_YT_Nov20 %>% 
   unnest_tokens(word, textOriginal) %>% 
   anti_join(stop_words)
 
 #removing stop words
-comments_YT_turismo$word = removeWords(comments_YT_turismo$word, stopwords("portuguese"))
+comments_YT_Nov20$word = removeWords(comments_YT_Nov20$word, stopwords("portuguese"))
 
 #Removing more stop words by creating a custom list of stop words
 my_stopwords <- tibble(word = c(as.character(1:10), 
-                                "é", "vai", "pra", "vc", "ser", "canal", 
-                                "aqui", "aí", "pois", "vai", "tudo", "pra",
-                                "todos", "bom", "presidente", "deus", "abençoe", 
+                                "Ã©", "vai", "pra", "vc", "ser", "canal", 
+                                "aqui", "aÃ­", "pois", "vai", "tudo", "pra",
+                                "todos", "bom", "presidente", "deus", "aben?oe", 
                                 "vou", "fechou", "youtube", "https", "tirar",
-                                "cara", "tá", "fez", "ainda", "vão", "quer", "anos",
+                                "cara", "tÃ¡", "fez", "ainda", "vÃ£o", "quer", "anos",
                                 "vez", "ver", "porque", "youtu.be", "ter", "vamos",
                                 "agora", "gente", "homem", "obrigado", "todo", "opah",
-                                "ah", "pessoas", "desde", "poderia", "votar", "abençoa",
+                                "ah", "pessoas", "desde", "poderia", "votar", "aben?oa",
                                 "inscreva", "contra", "tarde", "ama", "brasil", "acima",
-                                "nada", "frente", "jair", "esqueça", "semana", "mundo",
+                                "nada", "frente", "jair", "esqueÃ§a", "semana", "mundo",
                                 "melhor", "juntos", "brasileiros", "fechado", "bem",
-                                "fazer", "dia", "senhor", "boa", "inscreve", "agradeço",
-                                "paz", "atenção", "gratidão"))
+                                "paz", "atenÃ§Ã£o", "gratidÃ£o", "nao", "parabÃ©ns",
+                                "sim", "desse", "paÃ­s", "ficar", "assim", "fala",
+                                "sr", "pode", "coisa", "ninguÃ©m", "dr", "ctba",
+                                "bruno", "engler", "allex", "emelly", "maria",
+                                "angÃ©lica", "belo", "horizonte", "marcelo", "mindo",
+                                "bvp", "engenharia", "mp6a5xi23bg", "assista", 
+                                "prÃ³ximas", "ganhar", "deixa", "viu", "coisas",
+                                "falar", "existe", "mandou", "lindo", "toda",
+                                "nome", "inscreve", "noite", "guarde", "obrigada",
+                                "dÃ¡", "pouco", "pq", "disse", "queria",
+                                "fazer", "dia", "senhor", "boa", "inscreve", "agradeÃ§o",
+                                "paz", "atenÃ§Ã£o", "gratidÃ£o", "muita", "dar", "muitos",
+                                "sobre", "ta", "kkk", "onde", "outros", "vcs", "pro",
+                                "ai", "kkkk", "olha", "tÃ£o", "coisas", "faz",
+                                "hoje", "dizer", "continue", "meio", "acho",
+                                "vi", "fazer", "favor", "sendo", "entÃ£o", "dar",
+                                "querem", "dia"))
 
-#updating the dataframe, now without the stop words removed above
-comments_YT_turismo <- comments_YT_turismo %>% 
+#updating the dataframe, now without the stop words frmo the custom list created above
+comments_YT_Nov20 <- comments_YT_Nov20 %>% 
   anti_join(my_stopwords)
 
 #updating the data frame to remove rows with empty cells for the column "word"
-comments_YT_turismo <- comments_YT_turismo[-which(comments_YT_turismo$word == ""), ]
+comments_YT_Nov20 <- comments_YT_Nov20[-which(comments_YT_Nov20$word == ""), ]
 
-comments_YT_turismo %>%
+# creating a local file of the dataframe, without stopword identified and the blank spaces
+write.csv(comments_YT_Nov20, file = "comments_YT_Nov20.csv") 
+
+# loading updated local file
+comments_YT_Nov20 <- read_csv("comments_YT_Nov20.csv")
+
+# counting occurence of words
+comments_YT_Nov20 %>%
   count(word, sort = TRUE)
 
-View(comments_YT_turismo)
-# using pairwise_count() from the widyr package to count how many times each 
-# pair of words occurs together in a title or description field.
-#install.packages("widyr")
-library(widyr)
+#checking again, just to make sure the stop words and blank cells have been removed
+View(comments_YT_Nov20)
 
-word_pairs <- comments_YT_turismo %>% 
+word_pairs_nov20 <- comments_YT_Nov20 %>% 
   pairwise_count(word, id, sort = TRUE, upper = FALSE)
+
+# writing a local file with the word pairs
+write.csv(word_pairs_nov20, file = "word_pairs_Nov20.csv") 
+
+#loading the local file
+
+word_pairs_nov20 <- read_csv("word_pairs_Nov20.csv")
 
 # [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
 # reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
 # gsub("prefeito", "prefeitos", word_pairs)
 
-View(word_pairs)
+View(word_pairs_nov20)
 
 #network of co-occurring words
-library(ggplot2)
-library(igraph)
-library(ggraph)
-
+#library(ggplot2)
 
 word_pairs %>%
-  filter(n >= 8) %>%
+  filter(n >= 9) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
@@ -81,92 +121,8 @@ word_pairs %>%
   geom_node_text(aes(label = name), repel = TRUE, 
                  point.padding = unit(0.2, "lines")) +
   theme_void()
-
-#correlation among terms
-terms_cors <- comments_YT_turismo %>% 
-  group_by(word) %>%
-  filter(n() >= 50) %>%
-  pairwise_cor(word, id, sort = TRUE, upper = FALSE)
 
 #https://www.tidytextmining.com/nasa.html?q=nasa#how-data-is-organized-at-nasa
 
 
-# Recent video ------------------------------------------------------------
 
-comments_YT_turismo <- get_all_comments(video_id = "gOITkhNLUY4")
-comments_YT_recent <- get_all_comments(video_id = "gOITkhNLUY4")
-
-View(comments_YT_recent)
-as.data.frame(comments_YT_turismo)
-
-comments_YT_Nov20 <- comments_YT_turismo
-
-comments_YT_turismo <- comments_YT_turismo %>% 
-  unnest_tokens(word, textOriginal) %>% 
-  anti_join(stop_words)
-
-#removing stop words
-comments_YT_turismo$word = removeWords(comments_YT_turismo$word, stopwords("portuguese"))
-
-#Removing more stop words by creating a custom list of stop words
-my_stopwords <- tibble(word = c(as.character(1:10), 
-                                "é", "vai", "pra", "vc", "ser", "canal", 
-                                "aqui", "aí", "pois", "vai", "tudo", "pra",
-                                "todos", "bom", "presidente", "deus", "abençoe", 
-                                "vou", "fechou", "youtube", "https", "tirar",
-                                "cara", "tá", "fez", "ainda", "vão", "quer", "anos",
-                                "vez", "ver", "porque", "youtu.be", "ter", "vamos",
-                                "agora", "gente", "homem", "obrigado", "todo", "opah",
-                                "ah", "pessoas", "desde", "poderia", "votar", "abençoa",
-                                "inscreva", "contra", "tarde", "ama", "brasil", "acima",
-                                "nada", "frente", "jair", "esqueça", "semana", "mundo",
-                                "melhor", "juntos", "brasileiros", "fechado", "bem",
-                                "fazer", "dia", "senhor", "boa", "inscreve", "agradeço",
-                                "paz", "atenção", "gratidão"))
-
-#updating the dataframe, now without the stop words removed above
-comments_YT_turismo <- comments_YT_turismo %>% 
-  anti_join(my_stopwords)
-
-#updating the data frame to remove rows with empty cells for the column "word"
-comments_YT_turismo <- comments_YT_turismo[-which(comments_YT_turismo$word == ""), ]
-
-comments_YT_turismo %>%
-  count(word, sort = TRUE)
-
-View(comments_YT_turismo)
-# using pairwise_count() from the widyr package to count how many times each 
-# pair of words occurs together in a title or description field.
-#install.packages("widyr")
-library(widyr)
-
-word_pairs <- comments_YT_turismo %>% 
-  pairwise_count(word, id, sort = TRUE, upper = FALSE)
-
-# [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
-# reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
-# gsub("prefeito", "prefeitos", word_pairs)
-
-View(word_pairs)
-
-#network of co-occurring words
-library(ggplot2)
-library(igraph)
-library(ggraph)
-
-
-word_pairs %>%
-  filter(n >= 8) %>%
-  graph_from_data_frame() %>%
-  ggraph(layout = "fr") +
-  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
-  geom_node_point(size = 5) +
-  geom_node_text(aes(label = name), repel = TRUE, 
-                 point.padding = unit(0.2, "lines")) +
-  theme_void()
-
-#correlation among terms
-terms_cors <- comments_YT_turismo %>% 
-  group_by(word) %>%
-  filter(n() >= 50) %>%
-  pairwise_cor(word, id, sort = TRUE, upper = FALSE)
