@@ -1,17 +1,15 @@
-# httpuv package needed to run the ytoauth()
-# install.packages("httpuv")
-library(httpuv)
-library(tidyverse)
+library(httpuv) #httpuv package needed to run the ytoauth()
+library(tidyverse) #used for the pipe operator %>%, part of magrittr; and tibble()
 #library(tidygraph)
-library(tuber)
-library(tidytext) #used to most text analysis in this project 
+library(tuber) #used for yt_oauth(), get_all_comments()
+library(tidytext) #used for unnest_tokens() other text analysis functions in this project 
 library(tm) #used here to remove stop words
 library(widyr) #used for pairwise count (pairwise_count())
 library(ggraph) #used for the co-occurence chart
 library(igraph) #used for the co-occurence chart
 
 YT_client_id <- "113759878461-gp15t6i0l6v8cms91r1hp2v44que1dip.apps.googleusercontent.com"
-YT_client_secret <- "GOCSPX-"
+YT_client_secret <- "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"
 
 # use the youtube oauth
 yt_oauth(app_id = YT_client_id,
@@ -96,12 +94,14 @@ View(comments_YT_Nov20)
 word_pairs_nov20 <- comments_YT_Nov20 %>% 
   pairwise_count(word, id, sort = TRUE, upper = FALSE)
 
+# the pair of write() and read() functions should not be executed, because they
+# turn the tibble into a .csv file, which can't be properly read to generate the 
+# plot of co-occurring words
 # writing a local file with the word pairs
-write.csv(word_pairs_nov20, file = "word_pairs_Nov20.csv") 
+# write.csv(word_pairs_nov20, file = "word_pairs_Nov20.csv") 
 
-#loading the local file
-
-word_pairs_nov20 <- read_csv("word_pairs_Nov20.csv")
+#loading the local file for word_pairs_count
+# word_pairs_nov20 <- read_csv("word_pairs_Nov20.csv")
 
 # [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
 # reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
@@ -112,7 +112,7 @@ View(word_pairs_nov20)
 #network of co-occurring words
 #library(ggplot2)
 
-word_pairs %>%
+word_pairs_nov20 %>%
   filter(n >= 9) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +

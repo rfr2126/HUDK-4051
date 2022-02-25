@@ -10,7 +10,7 @@ library(ggraph) #used for the co-occurence chart
 library(igraph) #used for the co-occurence chart
 
 YT_client_id <- "113759878461-gp15t6i0l6v8cms91r1hp2v44que1dip.apps.googleusercontent.com"
-YT_client_secret <- "GOCSPX-"
+YT_client_secret <- "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"
 
 # use the youtube oauth
 yt_oauth(app_id = YT_client_id,
@@ -21,16 +21,14 @@ yt_oauth(app_id = YT_client_id,
 comments_YT_recent <- get_all_comments(video_id = "pWsxDp78XQY")
 
 View(comments_YT_recent)
-as.data.frame(comments_YT_turismo)
+as.data.frame(comments_YT_recent)
 
-comments_YT_Nov20 <- comments_YT_turismo
-
-comments_YT_turismo <- comments_YT_turismo %>% 
+comments_YT_recent <- comments_YT_recent %>% 
   unnest_tokens(word, textOriginal) %>% 
   anti_join(stop_words)
 
 #removing stop words
-comments_YT_turismo$word = removeWords(comments_YT_turismo$word, stopwords("portuguese"))
+comments_YT_recent$word = removeWords(comments_YT_recent$word, stopwords("portuguese"))
 
 #Removing more stop words by creating a custom list of stop words
 my_stopwords <- tibble(word = c(as.character(1:10), 
@@ -52,36 +50,24 @@ my_stopwords <- tibble(word = c(as.character(1:10),
                                 "hoje", "dizer", "continue", "meio", "acho"))
 
 #updating the dataframe, now without the stop words removed above
-comments_YT_turismo <- comments_YT_turismo %>% 
+comments_YT_recent <- comments_YT_recent %>% 
   anti_join(my_stopwords)
 
 #updating the data frame to remove rows with empty cells for the column "word"
-comments_YT_turismo <- comments_YT_turismo[-which(comments_YT_turismo$word == ""), ]
+comments_YT_recent <- comments_YT_recent[-which(comments_YT_recent$word == ""), ]
 
 
-comments_YT_turismo %>%
+comments_YT_recent %>%
   count(word, sort = TRUE)
 
-View(comments_YT_turismo)
+View(comments_YT_recent)
 # using pairwise_count() from the widyr package to count how many times each 
 # pair of words occurs together in a title or description field.
 #install.packages("widyr")
 library(widyr)
 
-word_pairs <- comments_YT_turismo %>% 
+word_pairs <- comments_YT_recent %>% 
   pairwise_count(word, id, sort = TRUE, upper = FALSE)
-
-# [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
-# reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
-# gsub("prefeito", "prefeitos", word_pairs)
-
-View(word_pairs)
-
-#network of co-occurring words
-library(ggplot2)
-library(igraph)
-library(ggraph)
-
 
 word_pairs %>%
   filter(n >= 8) %>%
@@ -93,8 +79,6 @@ word_pairs %>%
                  point.padding = unit(0.2, "lines")) +
   theme_void()
 
-#correlation among terms
-terms_cors <- comments_YT_turismo %>% 
-  group_by(word) %>%
-  filter(n() >= 50) %>%
-  pairwise_cor(word, id, sort = TRUE, upper = FALSE)
+
+#coding scheme  - 1st coding scheme to represent knowledge, then code 
+  # with the coding scheme, simplify the network
