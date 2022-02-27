@@ -6,7 +6,7 @@ author: Renato Russo
 date: February, 24, 2022
 ---
 
-This is a notebook that documents my first network analysis.
+This is a notebook that documents my first network analysis project.
 
 In this project, I gather comments from YouTube videos of president Jair Bolsonaro in conversations with his followers.
 I am interested in knowing whether specific topics that show up in the conversations also appear in the comments--that is, how much do the videos set the tone for the comments? In his conversations, the president sometimes suggest debatable theories to explain topics in politics and economy, for example, that mayors and state governors have a role in economic decline during the pandemic.
@@ -26,15 +26,239 @@ library(widyr) #used for pairwise count (pairwise_count())
 library(ggraph) #used for the co-occurence chart
 library(igraph) #used for the co-occurence chart
 
-YT_client_id <- "113759878461-gp15t6i0l6v8cms91r1hp2v44que1dip.apps.googleusercontent.com"
-YT_client_secret <- "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"
+# I'll comment all the lines that were used to obtain the data to avoid 
+# issues with Google/YouTube authentication
+# YT_client_id <- "id comes here"
+# YT_client_secret <- "secret comes here"
 
+# use the youtube oauth
+# yt_oauth(app_id = YT_client_id,
+  #       app_secret = YT_client_secret,
+   #      token = '')
 ```
 # Video 1
 
-Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Cmd+Option+I*.
+```{r}
 
-When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Cmd+Shift+K* to preview the HTML file). 
+#Get All the Comments Including Replies 
+#comments_YT_Nov20 <- get_all_comments(video_id = "bdfRebIp00c")
 
-The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+#just checking if data were imported correctly from YouTube
+#View(comments_YT_Nov20)
 
+#converting imported data to dataframe
+#as.data.frame(comments_YT_Nov20)
+
+#saving a local copy 
+#write.csv(comments_YT_Nov20, file = "comments_YT_Nov20.csv") 
+
+# loading local file
+#comments_YT_Nov20 <- read_csv("comments_YT_Nov20.csv")
+
+#unnesting tokens, that is, separating each word and assigning each one to a row
+# of the dataframe
+#comments_YT_Nov20 <- comments_YT_Nov20 %>% 
+ # unnest_tokens(word, textOriginal) %>% 
+  #anti_join(stop_words)
+
+#removing stop words
+#comments_YT_Nov20$word = removeWords(comments_YT_Nov20$word, stopwords("portuguese"))
+
+#Removing more stop words by creating a custom list of stop words
+#my_stopwords <- tibble(word = c(as.character(1:10), 
+                                # "é", "vai", "pra", "vc", "ser", "canal",
+                                # "aqui", "aí", "pois", "vai", "tudo", "pra",
+                                # "todos", "bom", "presidente", "deus", "aben?oe",
+                                # "vou", "fechou", "youtube", "https", "tirar",
+                                # "cara", "tá", "fez", "ainda", "vão", "quer", "anos",
+                                # "vez", "ver", "porque", "youtu.be", "ter", "vamos",
+                                # "agora", "gente", "homem", "obrigado", "todo", "opah",
+                                # "ah", "pessoas", "desde", "poderia", "votar", "aben?oa",
+                                # "inscreva", "contra", "tarde", "ama", "brasil", "acima",
+                                # "nada", "frente", "jair", "esqueça", "semana", "mundo",
+                                # "melhor", "juntos", "brasileiros", "fechado", "bem",
+                                # "paz", "atenção", "gratidão", "nao", "parabéns",
+                                # "sim", "desse", "país", "ficar", "assim", "fala",
+                                # "sr", "pode", "coisa", "ninguém", "dr", "ctba",
+                                # "bruno", "engler", "allex", "emelly", "maria",
+                                # "angélica", "belo", "horizonte", "marcelo", "mindo",
+                                # "bvp", "engenharia", "mp6a5xi23bg", "assista",
+                                # "próximas", "ganhar", "deixa", "viu", "coisas",
+                                # "falar", "existe", "mandou", "lindo", "toda",
+                                # "nome", "inscreve", "noite", "guarde", "obrigada",
+                                # "dá", "pouco", "pq", "disse", "queria",
+                                # "fazer", "dia", "senhor", "boa", "inscreve", "agradeço",
+                                # "paz", "atenção", "gratidão", "muita", "dar", "muitos",
+                                # "sobre", "ta", "kkk", "onde", "outros", "vcs", "pro",
+                                # "ai", "kkkk", "olha", "tão", "coisas", "faz",
+                                # "hoje", "dizer", "continue", "meio", "acho",
+                                # "vi", "fazer", "favor", "sendo", "então", "dar",
+                                # "querem", "dia"))
+
+#updating the dataframe, now without the stop words frmo the custom list created above
+# comments_YT_Nov20 <- comments_YT_Nov20 %>% 
+#   anti_join(my_stopwords)
+
+#updating the data frame to remove rows with empty cells for the column "word"
+#comments_YT_Nov20 <- comments_YT_Nov20[-which(comments_YT_Nov20$word == ""), ]
+
+# creating a local file of the dataframe, without stopword identified and the blank spaces
+#write.csv(comments_YT_Nov20, file = "comments_YT_Nov20.csv") 
+
+# loading updated local file
+comments_YT_Nov20 <- read_csv("comments_YT_Nov20.csv")
+
+# counting occurence of words
+comments_YT_Nov20 %>%
+  count(word, sort = TRUE)
+
+#checking again, just to make sure the stop words and blank cells have been removed
+#View(comments_YT_Nov20)
+
+word_pairs_nov20 <- comments_YT_Nov20 %>% 
+  pairwise_count(word, id, sort = TRUE, upper = FALSE)
+
+# the pair of write() and read() functions should not be executed, because they
+# turn the tibble into a .csv file, which can't be properly read to generate the 
+# plot of co-occurring words
+# writing a local file with the word pairs
+# write.csv(word_pairs_nov20, file = "word_pairs_Nov20.csv") 
+
+#loading the local file for word_pairs_count
+# word_pairs_nov20 <- read_csv("word_pairs_Nov20.csv")
+
+# [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
+# reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
+# gsub("prefeito", "prefeitos", word_pairs)
+
+#network of co-occurring words
+
+word_pairs_nov20 %>%
+  filter(n >= 9) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+# Video 2
+```{r}
+# #Get All the Comments Including Replies
+# comments_YT_recent <- get_all_comments(video_id = "pWsxDp78XQY")
+# 
+# View(comments_YT_recent)
+# as.data.frame(comments_YT_recent)
+# 
+# comments_YT_recent <- comments_YT_recent %>% 
+#   unnest_tokens(word, textOriginal) %>% 
+#   anti_join(stop_words)
+# 
+# #removing stop words
+# comments_YT_recent$word = removeWords(comments_YT_recent$word, stopwords("portuguese"))
+# 
+# #Removing more stop words by creating a custom list of stop words
+# my_stopwords <- tibble(word = c(as.character(1:10), 
+#                                 "é", "vai", "pra", "vc", "ser", "canal", 
+#                                 "aqui", "aí", "pois", "vai", "tudo", "pra",
+#                                 "todos", "bom", "presidente", "deus", 
+#                                 "vou", "fechou", "youtube", "https", "tirar",
+#                                 "cara", "tá", "fez", "ainda", "vão", "quer", "anos",
+#                                 "vez", "ver", "porque", "youtu.be", "ter", "vamos",
+#                                 "agora", "gente", "homem", "obrigado", "todo", "opah",
+#                                 "ah", "pessoas", "desde", "poderia", "votar", "lá",
+#                                 "inscreva", "contra", "tarde", "ama", "brasil", "acima",
+#                                 "nada", "frente", "jair", "esqueça", "semana", "mundo",
+#                                 "melhor", "juntos", "brasileiros", "fechado", "bem",
+#                                 "fazer", "dia", "senhor", "boa", "inscreve", "agradeço",
+#                                 "paz", "atenção", "gratidão", "muita", "dar", "muitos",
+#                                 "sobre", "ta", "kkk", "onde", "outros", "vcs", "pro",
+#                                 "ai", "kkkk", "olha", "tão", "coisas", "faz",
+#                                 "hoje", "dizer", "continue", "meio", "acho"))
+# 
+# #updating the dataframe, now without the stop words removed above
+# comments_YT_recent <- comments_YT_recent %>% 
+#   anti_join(my_stopwords)
+# 
+# #updating the data frame to remove rows with empty cells for the column "word"
+# comments_YT_recent <- comments_YT_recent[-which(comments_YT_recent$word == ""), ]
+# 
+# # creating a local file of the dataframe, without stopword identified and the blank spaces
+# write.csv(comments_YT_recent, file = "comments_YT_recent.csv") 
+
+# loading updated local file
+comments_YT_recent <- read_csv("comments_YT_recent.csv")
+# 
+# # counting occurence of words
+# comments_YT_recent %>%
+#   count(word, sort = TRUE)
+# 
+# #checking again, just to make sure the stop words and blank cells have been removed
+# View(comments_YT_recent)
+
+word_pairs_recent <- comments_YT_recent %>% 
+  pairwise_count(word, id, sort = TRUE, upper = FALSE)
+
+# the pair of write() and read() functions should not be executed, because they
+# turn the tibble into a .csv file, which can't be properly read to generate the 
+# plot of co-occurring words
+# writing a local file with the word pairs
+# write.csv(word_pairs_nov20, file = "word_pairs_Nov20.csv") 
+
+#loading the local file for word_pairs_count
+# word_pairs_nov20 <- read_csv("word_pairs_Nov20.csv")
+
+# [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
+# reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
+# gsub("prefeito", "prefeitos", word_pairs)
+
+# View(word_pairs_nov20)
+
+#network of co-occurring words
+#library(ggplot2)
+
+word_pairs_recent %>%
+  filter(n >= 9) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+***
+Comparing the network charts for both videos:
+```{r}
+word_pairs_nov20 %>%
+  filter(n >= 9) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+word_pairs_recent %>%
+  filter(n >= 9) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void()
+
+```
+
+***
+As seen above, in this analysis I created two unidirected networks with weighted edges that support textual analysis of comments left in two videos of Brazilian President Jair Bolsonaro published on YouTube. Video 1 (V1) was published in November 2020, and Video 2 (V2) published in February 2022. The chart shows co-occurrence of terms that have a pairwise count of 9 or above--that is, they appear together 9 or more times.
+
+As expected, both networks have the president's name ("Bolsonaro") as one of the main nodes. Also, both networks have as another node a term related to religious faith ("abençoe" = "bless"). One of the differences in that node is that in V1 the religion region appears to have higher local density, and it is surrounded by stronger edges that connect it to a higher variety of faith-related nodes ("jesus", "faith", "messiah"--a word whose Portuguese translation happens to be his middle name).
+
+As for the question raised prior--whether commentators associate mayors and governors to the topic of the video,  whether or not the president cites them--the networks show that they are present in V1 (in which there is mention to them in the video) and not in V2 (no mention in the video). This result is somehow expected too. However, we can't draw any further conclusion, because those terms ("prefeito" = mayor; "governador" = governor) do not appear to have any other significant association: they are not part of any specific region and are only connected to the president's name.

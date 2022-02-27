@@ -1,0 +1,12 @@
+---
+title: "ICE - Natural Language Processing"
+output: html_document
+df_print: paged
+author: Renato Russo
+date: March, 10, 2022
+---
+``` {r}
+library(tidyverse)
+comments_bar <- read.csv("comments_YT_barroso_raw.csv")
+comments_bar
+```

@@ -8,8 +8,8 @@ library(widyr) #used for pairwise count (pairwise_count())
 library(ggraph) #used for the co-occurence chart
 library(igraph) #used for the co-occurence chart
 
-YT_client_id <- "113759878461-gp15t6i0l6v8cms91r1hp2v44que1dip.apps.googleusercontent.com"
-YT_client_secret <- "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"
+YT_client_id <- ""
+YT_client_secret <- ""
 
 # use the youtube oauth
 yt_oauth(app_id = YT_client_id,

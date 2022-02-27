@@ -9,8 +9,8 @@ library(widyr) #used for pairwise count (pairwise_count())
 library(ggraph) #used for the co-occurence chart
 library(igraph) #used for the co-occurence chart
 
-YT_client_id <- "113759878461-gp15t6i0l6v8cms91r1hp2v44que1dip.apps.googleusercontent.com"
-YT_client_secret <- "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"
+YT_client_id <- ""
+YT_client_secret <- ""
 
 # use the youtube oauth
 yt_oauth(app_id = YT_client_id,
@@ -18,11 +18,22 @@ yt_oauth(app_id = YT_client_id,
          token = '')
 
 #Get All the Comments Including Replies
-comments_YT_barroso <- get_all_comments(video_id = "sClRvaIAYTc")
+comments_YT_barroso_raw <- get_all_comments(video_id = "sClRvaIAYTc")
 
+#just checking if data were imported correctly from YouTube
 View(comments_YT_barroso)
-as.data.frame(comments_YT_barroso)
 
+#converting imported data to dataframe
+as.data.frame(comments_YT_barroso_raw)
+
+#saving a local copy 
+write.csv(comments_YT_barroso_raw, file = "comments_YT_barroso_raw.csv") 
+
+# loading local file
+comments_YT_barroso_raw <- read_csv("comments_YT_barroso_raw.csv")
+
+#unnesting tokens, that is, separating each word and assigning each one to a row
+# of the dataframe
 comments_YT_barroso <- comments_YT_barroso %>% 
   unnest_tokens(word, textOriginal) %>% 
   anti_join(stop_words)
@@ -34,43 +45,76 @@ comments_YT_barroso$word = removeWords(comments_YT_barroso$word, stopwords("port
 my_stopwords <- tibble(word = c(as.character(1:10), 
                                 "é", "vai", "pra", "vc", "ser", "canal", 
                                 "aqui", "aí", "pois", "vai", "tudo", "pra",
-                                "todos", "bom", "presidente", "deus", 
+                                "todos", "bom", "presidente", "deus", "aben?oe", 
                                 "vou", "fechou", "youtube", "https", "tirar",
                                 "cara", "tá", "fez", "ainda", "vão", "quer", "anos",
                                 "vez", "ver", "porque", "youtu.be", "ter", "vamos",
                                 "agora", "gente", "homem", "obrigado", "todo", "opah",
-                                "ah", "pessoas", "desde", "poderia", "votar", "lá",
+                                "ah", "pessoas", "desde", "poderia", "votar", "aben?oa",
                                 "inscreva", "contra", "tarde", "ama", "brasil", "acima",
                                 "nada", "frente", "jair", "esqueça", "semana", "mundo",
                                 "melhor", "juntos", "brasileiros", "fechado", "bem",
+                                "paz", "atenção", "gratidão", "nao", "parabéns",
+                                "sim", "desse", "país", "ficar", "assim", "fala",
+                                "sr", "pode", "coisa", "ninguém", "dr", "ctba",
+                                "bruno", "engler", "allex", "emelly", "maria",
+                                "angélica", "belo", "horizonte", "marcelo", "mindo",
+                                "bvp", "engenharia", "mp6a5xi23bg", "assista", 
+                                "próximas", "ganhar", "deixa", "viu", "coisas",
+                                "falar", "existe", "mandou", "lindo", "toda",
+                                "nome", "inscreve", "noite", "guarde", "obrigada",
+                                "dá", "pouco", "pq", "disse", "queria",
                                 "fazer", "dia", "senhor", "boa", "inscreve", "agradeço",
                                 "paz", "atenção", "gratidão", "muita", "dar", "muitos",
                                 "sobre", "ta", "kkk", "onde", "outros", "vcs", "pro",
                                 "ai", "kkkk", "olha", "tão", "coisas", "faz",
-                                "hoje", "dizer", "continue", "meio", "acho"))
+                                "hoje", "dizer", "continue", "meio", "acho",
+                                "vi", "fazer", "favor", "sendo", "então", "dar",
+                                "querem", "dia"))
 
-#updating the dataframe, now without the stop words removed above
+#updating the dataframe, now without the stop words frmo the custom list created above
 comments_YT_barroso <- comments_YT_barroso %>% 
   anti_join(my_stopwords)
 
 #updating the data frame to remove rows with empty cells for the column "word"
 comments_YT_barroso <- comments_YT_barroso[-which(comments_YT_barroso$word == ""), ]
 
+# creating a local file of the dataframe, without stopword identified and the blank spaces
+write.csv(comments_YT_barroso, file = "comments_YT_barroso.csv") 
 
+# loading updated local file
+comments_YT_barroso <- read_csv("comments_YT_barroso.csv")
+
+# counting occurence of words
 comments_YT_barroso %>%
   count(word, sort = TRUE)
 
+#checking again, just to make sure the stop words and blank cells have been removed
 View(comments_YT_barroso)
-# using pairwise_count() from the widyr package to count how many times each 
-# pair of words occurs together in a title or description field.
-#install.packages("widyr")
-library(widyr)
 
-word_pairs <- comments_YT_barroso %>% 
+word_pairs_nov20 <- comments_YT_barroso %>% 
   pairwise_count(word, id, sort = TRUE, upper = FALSE)
 
-word_pairs %>%
-  filter(n >= 20) %>%
+# the pair of write() and read() functions should not be executed, because they
+# turn the tibble into a .csv file, which can't be properly read to generate the 
+# plot of co-occurring words
+# writing a local file with the word pairs
+# write.csv(word_pairs_nov20, file = "word_pairs_Nov20.csv") 
+
+#loading the local file for word_pairs_count
+# word_pairs_nov20 <- read_csv("word_pairs_Nov20.csv")
+
+# [not working: R crashes] using gsub to replace singular instance of "mayor" for the plural
+# reference: https://statisticsglobe.com/r-replace-specific-characters-in-string
+# gsub("prefeito", "prefeitos", word_pairs)
+
+View(word_pairs_nov20)
+
+#network of co-occurring words
+#library(ggplot2)
+
+word_pairs_nov20 %>%
+  filter(n >= 9) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
@@ -78,7 +122,3 @@ word_pairs %>%
   geom_node_text(aes(label = name), repel = TRUE, 
                  point.padding = unit(0.2, "lines")) +
   theme_void()
-
-
-#coding scheme  - 1st coding scheme to represent knowledge, then code 
-  # with the coding scheme, simplify the network
