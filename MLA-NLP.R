@@ -84,7 +84,7 @@ topTerms %>%
   scale_x_reordered() +
   labs(title = "Topics in general tweets early in the war")
 
-library(widyr)
+NATOlibrary(widyr)
 word_pairs_ukr_early <- tweets_token %>% 
   pairwise_count(word, status_id, sort = TRUE, upper = FALSE)
 
@@ -189,7 +189,7 @@ word_pairs_ukr_20 %>%
 # CNN-RELATED EARLY TWEETS ---------------------------------------------
 load("/Users/renatorusso/Desktop/TLTLAB/Ukraine analysis/ukraine_cnn_feb_25.Rda")
 ukr_early_cnn <- as_tibble(ukraine_cnn_feb_25)
-
+View(ukr_early_cnn)
 # DATA CLEANING AND WRANGLING ---------------------------------------------
 
 ## cleaning the text
@@ -263,7 +263,7 @@ word_pairs_cnn_early %>%
 # CNN-RELATED 20 DAYS INTO THE WAR ---------------------------------------------
 load("/Users/renatorusso/ukraine_cnn_mar_16.Rda")
 ukr_d20_cnn <- as_tibble(ukraine_cnn_mar_16)
-
+View(ukr_d20_cnn)
 # DATA CLEANING AND WRANGLING ---------------------------------------------
 
 ## cleaning the text
@@ -324,7 +324,7 @@ word_pairs_d20_cnn <- tweets_token_d20_cnn %>%
 
 ## network of co-occurring words
 word_pairs_d20_cnn %>%
-  filter(n >= 200) %>%
+  filter(n >= 250) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
@@ -337,7 +337,7 @@ word_pairs_d20_cnn %>%
 # BREITBART-RELATED EARLY TWEETS ---------------------------------------------
 load("/Users/renatorusso/Desktop/TLTLAB/Ukraine analysis/ukraine_bb_feb_25.Rda")
 ukr_early_bb <- as_tibble(ukraine_bb_feb_25)
-
+View(ukr_early_bb)
 # DATA CLEANING AND WRANGLING ---------------------------------------------
 
 ## cleaning the text
@@ -411,6 +411,7 @@ word_pairs_bb_early %>%
 # BREITBART-RELATED 20 DAYS INTO THE WAR TWEETS ---------------------------------------------
 load("/Users/renatorusso/ukraine_bb_mar_16.Rda")
 ukr_d20_bb <- as_tibble(ukraine_bb_mar_16)
+View(ukr_d20_bb)
 
 # DATA CLEANING AND WRANGLING ---------------------------------------------
 
@@ -472,7 +473,7 @@ word_pairs_d20_bb <- tweets_token_d20_bb %>%
 
 ## network of co-occurring words
 word_pairs_d20_bb %>%
-  filter(n >= 20) %>%
+  filter(n >= 25) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +

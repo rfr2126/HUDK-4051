@@ -5,18 +5,23 @@ df_print: paged
 author: Renato Russo
 date: March, 18, 2022
 ---
-This is a notebook that documents my first natural language processing project. In this project, I scrape Twitter data on the war in Ukraine. I collect tweets using three different criteria:
+# About this project
+This is a notebook that documents my first natural language processing project, in which I scrape Twitter data on the war in Ukraine. I collect tweets using three different keywords in two different moments--at the very start of the conflict and 20 days into the war.
 
-1. __Tweets containing the term "Ukraine"__. These publications are a sort of "control group." They are intended to measure general perceptions about the conflict, without any other filters besides time of publication and, obviously the ability and intention to publish tweets.
-2. __Tweets containing the terms "Ukraine" and "CNN"__. The intent here is evaluating publications that make reference to a mainstream media outlet. This would represent one of the "control groups."
-3. __Tweets containing the terms "Ukraine" and "Breitbart"__. This would represent a sample of tweets that are associated with a right-wing website. This is the second "control group."
+1. __Tweets containing the term "Ukraine"__. These publications are a sort of "control group." They are intended to measure general perceptions about the conflict, without any other filters besides time of publication and, obviously the ability and intention to publish tweets. This would represent the control group.
+2. __Tweets containing the terms "Ukraine" and "CNN"__. The intent here is evaluating publications that make reference to a mainstream media outlet. This would represent one of the "treatment groups."
+3. __Tweets containing the terms "Ukraine" and "Breitbart"__. This would represent a sample of tweets that are associated with a right-wing website. This is the other "treatment group."
 
-My interest is in evaluating the differences in perception about the war according to exposure to media with different political orientation. Breitbart is clearly right-wing and CNN, in my opinion is moderate, although [there are claims that it is left](https://www.allsides.com/news-source/cnn-media-bias) and that [it is right-wing](https://www.democraticunderground.com/100271183). I collected tweets since February 24 (representing "natural state" of opinions) and data in this project covers the tweets until March 10. Latest tweets would represent the effect of 3 weeks of media coverage.
+My interest is in evaluating the differences in perception about the war according to exposure to media with different political orientation. Breitbart is clearly right-wing and CNN, in my opinion, is moderate, although [there are claims that it is left-](https://www.allsides.com/news-source/cnn-media-bias) and that [it is right-wing](https://www.democraticunderground.com/100271183). I collected tweets since February 24 (representing "natural state" of opinions) and data in this project covers the tweets until March 10. Latest tweets would represent the effect of 3 weeks of media coverage.
 
+## Data preparation of each subset {.tabset}
 
+### General/early
 ```{r}
 library(tidyverse)
+```
 
+```{r}
 # GENERAL TWEETS FIRST DAYS ---------------------------------------------
 load("/Users/renatorusso/Desktop/TLTLAB/Ukraine analysis/ukraine_feb_24.Rda")
 ukr_early1 <- as_tibble(ukraine_feb_24_real)
@@ -489,7 +494,7 @@ word_pairs_d20_bb <- tweets_token_d20_bb %>%
 
 ## network of co-occurring words
 word_pairs_d20_bb %>%
-  filter(n >= 50) %>%
+  filter(n >= 20) %>%
   graph_from_data_frame() %>%
   ggraph(layout = "fr") +
   geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
@@ -500,3 +505,232 @@ word_pairs_d20_bb %>%
   labs(title = "Co-occurring terms in Breitbart-related tweets 20 days into the war")
 
 ```
+
+Now that I have created all the charts, I'll replicate them here to make the comparison easier.
+
+## Charts of most relevant topics {.tabset}
+
+### General/early
+
+```{r}
+topTerms %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>% 
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_x") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Topics in general tweets early in the war")
+```
+
+### General/20 days
+
+```{r}
+topTerms_20 %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>% 
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_x") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Topics in general tweets 20 days into the war")
+```
+
+### CNN/early
+
+```{r}
+topTerms_cnn_early %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>% 
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_x") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Topics in CNN-related tweets early in the war")
+```
+
+### CNN/20 days
+
+```{r}
+topTerms_d20_cnn %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>% 
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_x") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Topics in CNN-related tweets 20 days into the war")
+```
+
+### Breitbart/early
+
+```{r}
+topTerms_bb_early %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>% 
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_x") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Topics in Breitbart-related tweets early in the war")
+```
+
+### Breitbart/20 days
+
+```{r}
+topTerms_d20_bb %>% 
+  mutate(term = reorder_within(term, beta, topic)) %>% 
+  ggplot(aes(term, beta, fill = factor(topic))) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~ topic, scales = "free_x") +
+  coord_flip() +
+  scale_x_reordered() +
+  labs(title = "Topics in Breitbart-related tweets 20-days into the war")
+```
+
+____
+
+##### Early hours
+|         |                            |                               |                           |
+|---------|----------------------------|-------------------------------|---------------------------|
+| Topic # | General                    | CNN-related                   | Breitbart-related         |
+| 1       | Russia, Putin, war         | NATO and sanctions; Biden     | Oil; Trump; refugees      |
+| 2       | Explosions heard           | Russian invasion; Europe      | Biden; sanctions; border  |
+| 3       | Russian military operation | News coverage of the invasion | Russia; special operation |
+| 4       | NATO; Putin; war           | Chernobyl; control            | Crisis; Biden; prices     |
+
+
+#####  20 days into the war
+|         |                            |                            |                            |
+|---------|----------------------------|----------------------------|----------------------------|
+| Topic # | General          | CNN-related              | Breitbart-related         |
+| 1       | NATO support     | Zelensky, Biden, Putin   | Democrats; failure        |
+| 2       | People/children  | China/Russia             | China; biological weapons |
+| 3       | NATO, aid, Biden | Bomb in Mariupol theater | Poll; Trump               |
+| 4       | Stop Putin       | NATO; Zelensky           | Documentary; Poland       |
+
+
+As the tables above show, there are a few differences in each segment of the data set, such as:
+
+__Connections to domestic issues__. In tweets mentioning Breitbart News, comments connecting the conflict with US domestic issues appear from the outset, as demonstrated by topics like "Trump," "border," and "crisis," associated with "Biden."
+
+__China and biological weapons__ Tweets mentioning Breitbart 20 days into the war associate China and biological weapons, possibly connecting with a column published on the news website about the conspiracy theories about US-funded biological labs in Ukraine.
+
+
+![alt text](/Users/renatorusso/Desktop/Ed.D./HUDK-4051/NLP-China-Breibart.png "Title")
+
+
+__Domestic politics__ In Breitbart-related tweets, US domestic politics is salient. For example, Trump appears as one of the topics. Some tweets that mention the former president refer to a public opinion poll according to which there is belief that Russia would not invade Ukraine were Trump the US president.
+
+
+## Charts of co-occurring terms {.tabset}
+
+### General/early
+
+```{r}
+word_pairs_ukr_early %>%
+  filter(n >= 200) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void() +
+  labs(title = "Co-occurring terms in general tweets early in the war")
+```
+
+### General/20 days
+
+```{r}
+word_pairs_ukr_20 %>%
+  filter(n >= 100) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void() +
+  labs(title = "Co-occurring terms in general tweets 20 days into the war")
+```
+
+### CNN/early
+
+```{r}
+word_pairs_cnn_early %>%
+  filter(n >= 200) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void() +
+  labs(title = "Co-occurring terms in CNN-related tweets early in the war")
+```
+
+### CNN/20 days
+```{r}
+ word_pairs_d20_cnn %>%
+  filter(n >= 250) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void() +
+  labs(title = "Co-occurring terms in CNN-related tweets 20 days into the war")
+```
+
+### Breitbart/early
+
+```{r}
+  word_pairs_bb_early %>%
+  filter(n >= 50) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void() +
+  labs(title = "Co-occurring terms in Breitbart-related tweets early in the war")
+```
+
+### Breitbart/20 days
+```{r}
+word_pairs_d20_bb %>%
+  filter(n >= 20) %>%
+  graph_from_data_frame() %>%
+  ggraph(layout = "fr") +
+  geom_edge_link(aes(edge_alpha = n, edge_width = n), edge_colour = "cyan4") +
+  geom_node_point(size = 5) +
+  geom_node_text(aes(label = name), repel = TRUE, 
+                 point.padding = unit(0.2, "lines")) +
+  theme_void() +
+  labs(title = "Co-occurring terms in Breitbart-related tweets 20 days into the war")
+
+```
+
+____
+
+##### Noteworthy graph regions by subset of tweets
+|         |                            |
+|---------|----------------------------|
+| Subset  | Noteworthy regions |
+| General/early hours | Military operation; the UN reaction |
+| General/20 days into | Biden's reaction; Trumps connection with Putin; political and economical consequences |
+| CNN/early hours  | Russian approximation to Chernobyl; the role of NATO and sanctions |
+| CNN/20 days into |  Mariupol theater |
+| Breitbart/early hours  | Biden and crisis; Border agents being sent to Poland |
+| Breitbart/20 days into | Censorship of Oliver Stone's documentary; war helping democrats divert attention  |
+
+As seen above, the co-occurring terms charts also shows some differences across subsets at the two different moments. The Breitbart-related tweets seem to display stronger connections between the conflict and US domestic politics--a similar pattern found in the chart of topics.
+
+----
+
+My motivation for this analysis was identifying differences in perception about the war in Ukraine according to exposure to media with different political orientations, and, indeed, my analysis point to a few aspects that might be worth exploring in more depth. The most salient difference refers to the apparent sensitivity of a segment of users about the connections between the war and domestic issues. From the outset, tweets mentioning @BreitbartNews point to connections with former president Trump, the border crisis in the US, and the effects of the war in diverting the public's attention to more crucial issues--and how this might benefit Democrats.
+
+One limitation of this analysis is that the volumes of tweets are considerably different across subsets: general tweets, obviously form an enormous subset, whereas CNN-related appear in a much lower volume, although still much higher than that of Breitbart related publications. Those differences are clear in the co-occurring charts, whose edges differ in order of magnitude (10s for Breitbart-related; hundreds for CNN-related; thousands for general).
