@@ -110,7 +110,6 @@ word_pairs_nov20 <- comments_YT_Nov20 %>%
 View(word_pairs_nov20)
 
 #network of co-occurring words
-#library(ggplot2)
 
 word_pairs_nov20 %>%
   filter(n >= 9) %>%
@@ -122,7 +121,7 @@ word_pairs_nov20 %>%
                  point.padding = unit(0.2, "lines")) +
   theme_void()
 
-#https://www.tidytextmining.com/nasa.html?q=nasa#how-data-is-organized-at-nasa
+#https://www.tidytextmining.com/nasa.html
 
 
 
