@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/871374/96b227a29fa64f49873ed1a80a1b0858
+bundleId: https://api.rpubs.com/api/v1/document/871374/96b227a29fa64f49873ed1a80a1b0858
+url: http://rpubs.com/renatorusso/871374
+when: 1645976931.57079
