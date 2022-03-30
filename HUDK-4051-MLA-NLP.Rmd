@@ -3,7 +3,7 @@ title: "Mini Learning Analytics Assignment - Natural Language Processing"
 output: html_document
 df_print: paged
 author: Renato Russo
-date: March, 18, 2022
+date: March, 30, 2022
 ---
 # About this project
 This is a notebook that documents my first natural language processing project, in which I scrape Twitter data on the war in Ukraine. I collect tweets using three different keywords in two different moments--at the very start of the conflict and 20 days into the war.
