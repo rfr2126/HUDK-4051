@@ -110,6 +110,4 @@ ctable(
 ```
 
 ```{r}
-ggplot(a2s_logs_clean, aes(x = Time)) + geom_density(stat = "bin", binwidth = 3600, 
-    colour = "black", fill = "darkgreen") + ylab("Requests/hour") + xlab("Time")
 ```
