@@ -22,11 +22,15 @@ a2s_logs <- a2s_logs
 load("/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_students.Rda")
 a2s_students <- a2s_students
 
+load("/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_logs_clean.Rda")
+a2s_logs_clean <- a2s_logs_clean
+
 library(summarytools)
 library(tidyverse)
+library(ggplot2)
 ```
 
-## Exploratory analysis
+## Exploratory analysis - "events"
 ### Table: Absolute frequency of journeys
 #### journeyId = 9: diffusion
 #### journeyId = 44: wildfires
@@ -54,6 +58,7 @@ ctable(
 )
 ```
 
+### Table: Block type per journey
 ```{r}
 ### Block types by journey ----------------------------------------------------
 # a table of block types by journey
@@ -61,32 +66,50 @@ blocktype_journey <- (table(a2s_events$blockType, a2s_events$journeyId))
 colnames(blocktype_journey)[colnames(blocktype_journey) == "9"] <- "diffusion"
 colnames(blocktype_journey)[colnames(blocktype_journey) == "44"] <- "wildfires"
 as.data.frame(blocktype_journey)
+blocktype_journey
 
-table(blocktype_journey)
 ```
+### Table: Block type frequency (journey: diffusion)
 ```{r}
 # a table of the block types for journey "diffusion"
 diffusion_blocktypes <- as.data.frame(blocktype_journey[, 'diffusion'])
-View(diffusion_blocktypes)
-```
+diffusion_blocktypes
 
+```
+### Table: Block type frequency (journey: "wildfires")
+```{r}
 # a table of the block types for journey "wildfires"
 wildfires_blocktypes <- as.data.frame(blocktype_journey[, 'wildfires'])
-View(wildfires_blocktypes)
+wildfires_blocktypes
+```
 
-### Action types by journey
-# a table of action types by journey
-action_journey <- (table(a2s_events$actionType, a2s_events$journeyId))
-colnames(action_journey)[colnames(action_journey) == "9"] <- "diffusion"
-colnames(action_journey)[colnames(action_journey) == "44"] <- "wildfires"
-as.data.frame(action_journey)
-action_journey
+## Exploratory analysis - "logs" (video-viewing data)
+### Table: video frequency
+```{r}
+table(a2s_logs_clean$Video)
+```
+### Table: Video frequency
+```{r}
+freq(a2s_logs_clean$Video)
+```
 
-# a table of the action types for journey "diffusion"
-diffusion_actiontypes <- as.data.frame(action_journey[, 'diffusion'])
-View(diffusion_actiontypes)
+### Table: Frequency of actions by video
+```{r}
+ctable(
+  x = a2s_logs_clean$Video,
+  y = a2s_logs_clean$Action
+)
+```
 
-# a table of the block types for journey "wildfires"
-wildfires_actiontypes <- as.data.frame(action_journey[, 'wildfires'])
-View(wildfires_actiontypes)
+### Table: Frequency of actions by user
+```{r}
+ctable(
+  x = a2s_logs_clean$Action,
+  y = a2s_logs_clean$userId
+)
+```
+
+```{r}
+ggplot(a2s_logs_clean, aes(x = Time)) + geom_density(stat = "bin", binwidth = 3600, 
+    colour = "black", fill = "darkgreen") + ylab("Requests/hour") + xlab("Time")
 ```

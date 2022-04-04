@@ -198,8 +198,8 @@ pre code {
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 ## x tibble::view()  masks summarytools::view()</code></pre>
-<div id="exploratory-analysis" class="section level2">
-<h2>Exploratory analysis</h2>
+<div id="exploratory-analysis---events" class="section level2">
+<h2>Exploratory analysis - “events”</h2>
 <div id="table-absolute-frequency-of-journeys" class="section level3">
 <h3>Table: Absolute frequency of journeys</h3>
 <div id="journeyid-9-diffusion" class="section level4">
@@ -305,6 +305,9 @@ pre code {
 ##            undefined                 0 ( 0.0%)      12 (100.0%)       0 (  0.0%)      12 (100.0%)
 ##                Total               212 ( 0.7%)   17609 ( 58.7%)   12162 ( 40.6%)   29983 (100.0%)
 ## -------------------- ----------- ------------- ---------------- ---------------- ----------------</code></pre>
+</div>
+<div id="table-block-type-per-journey" class="section level3">
+<h3>Table: Block type per journey</h3>
 <pre class="r"><code>### Block types by journey ----------------------------------------------------
 # a table of block types by journey
 blocktype_journey &lt;- (table(a2s_events$blockType, a2s_events$journeyId))
@@ -316,39 +319,134 @@ as.data.frame(blocktype_journey)</code></pre>
 {"columns":[{"label":["Var1"],"name":[1],"type":["fct"],"align":["left"]},{"label":["Var2"],"name":[2],"type":["fct"],"align":["left"]},{"label":["Freq"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"apply_force_up","2":"0","3":"0"},{"1":"apply_gravity","2":"0","3":"0"},{"1":"apply_wind","2":"0","3":"0"},{"1":"ask_each_particle","2":"0","3":"0"},{"1":"attach","2":"0","3":"0"},{"1":"blow","2":"0","3":"0"},{"1":"bounce_off","2":"0","3":"0"},{"1":"come_down","2":"0","3":"0"},{"1":"controls_if","2":"0","3":"0"},{"1":"controls_when","2":"0","3":"0"},{"1":"create_particles","2":"0","3":"0"},{"1":"create_smoke","2":"0","3":"0"},{"1":"distance_from_fire","2":"0","3":"0"},{"1":"erase","2":"0","3":"0"},{"1":"for_each_particle","2":"0","3":"0"},{"1":"for_smoke","2":"0","3":"0"},{"1":"get_blown","2":"0","3":"0"},{"1":"go","2":"0","3":"0"},{"1":"go_up","2":"0","3":"0"},{"1":"interact","2":"0","3":"0"},{"1":"logic_negate","2":"0","3":"0"},{"1":"logic_operation","2":"0","3":"0"},{"1":"mouse_click","2":"0","3":"0"},{"1":"move","2":"0","3":"0"},{"1":"NULL","2":"0","3":"211"},{"1":"particle_mass","2":"0","3":"0"},{"1":"particles","2":"0","3":"1"},{"1":"set","2":"0","3":"0"},{"1":"set_color","2":"0","3":"0"},{"1":"set_heading","2":"0","3":"0"},{"1":"set_mass","2":"0","3":"0"},{"1":"set_position","2":"0","3":"0"},{"1":"set_size","2":"0","3":"0"},{"1":"set_speed","2":"0","3":"0"},{"1":"set_type","2":"0","3":"0"},{"1":"spread_out","2":"0","3":"0"},{"1":"temperature","2":"0","3":"0"},{"1":"touching_dropdown","2":"0","3":"0"},{"1":"undefined","2":"0","3":"0"},{"1":"apply_force_up","2":"diffusion","3":"0"},{"1":"apply_gravity","2":"diffusion","3":"0"},{"1":"apply_wind","2":"diffusion","3":"0"},{"1":"ask_each_particle","2":"diffusion","3":"296"},{"1":"attach","2":"diffusion","3":"242"},{"1":"blow","2":"diffusion","3":"0"},{"1":"bounce_off","2":"diffusion","3":"578"},{"1":"come_down","2":"diffusion","3":"0"},{"1":"controls_if","2":"diffusion","3":"835"},{"1":"controls_when","2":"diffusion","3":"0"},{"1":"create_particles","2":"diffusion","3":"627"},{"1":"create_smoke","2":"diffusion","3":"0"},{"1":"distance_from_fire","2":"diffusion","3":"0"},{"1":"erase","2":"diffusion","3":"87"},{"1":"for_each_particle","2":"diffusion","3":"510"},{"1":"for_smoke","2":"diffusion","3":"0"},{"1":"get_blown","2":"diffusion","3":"0"},{"1":"go","2":"diffusion","3":"1531"},{"1":"go_up","2":"diffusion","3":"0"},{"1":"interact","2":"diffusion","3":"285"},{"1":"logic_negate","2":"diffusion","3":"19"},{"1":"logic_operation","2":"diffusion","3":"59"},{"1":"mouse_click","2":"diffusion","3":"1533"},{"1":"move","2":"diffusion","3":"415"},{"1":"NULL","2":"diffusion","3":"6807"},{"1":"particle_mass","2":"diffusion","3":"0"},{"1":"particles","2":"diffusion","3":"1"},{"1":"set","2":"diffusion","3":"1540"},{"1":"set_color","2":"diffusion","3":"265"},{"1":"set_heading","2":"diffusion","3":"135"},{"1":"set_mass","2":"diffusion","3":"138"},{"1":"set_position","2":"diffusion","3":"128"},{"1":"set_size","2":"diffusion","3":"181"},{"1":"set_speed","2":"diffusion","3":"453"},{"1":"set_type","2":"diffusion","3":"100"},{"1":"spread_out","2":"diffusion","3":"0"},{"1":"temperature","2":"diffusion","3":"462"},{"1":"touching_dropdown","2":"diffusion","3":"370"},{"1":"undefined","2":"diffusion","3":"12"},{"1":"apply_force_up","2":"wildfires","3":"2"},{"1":"apply_gravity","2":"wildfires","3":"2"},{"1":"apply_wind","2":"wildfires","3":"263"},{"1":"ask_each_particle","2":"wildfires","3":"481"},{"1":"attach","2":"wildfires","3":"7"},{"1":"blow","2":"wildfires","3":"87"},{"1":"bounce_off","2":"wildfires","3":"192"},{"1":"come_down","2":"wildfires","3":"17"},{"1":"controls_if","2":"wildfires","3":"191"},{"1":"controls_when","2":"wildfires","3":"46"},{"1":"create_particles","2":"wildfires","3":"497"},{"1":"create_smoke","2":"wildfires","3":"6"},{"1":"distance_from_fire","2":"wildfires","3":"12"},{"1":"erase","2":"wildfires","3":"25"},{"1":"for_each_particle","2":"wildfires","3":"0"},{"1":"for_smoke","2":"wildfires","3":"6"},{"1":"get_blown","2":"wildfires","3":"5"},{"1":"go","2":"wildfires","3":"1740"},{"1":"go_up","2":"wildfires","3":"20"},{"1":"interact","2":"wildfires","3":"194"},{"1":"logic_negate","2":"wildfires","3":"7"},{"1":"logic_operation","2":"wildfires","3":"32"},{"1":"mouse_click","2":"wildfires","3":"5"},{"1":"move","2":"wildfires","3":"497"},{"1":"NULL","2":"wildfires","3":"4944"},{"1":"particle_mass","2":"wildfires","3":"20"},{"1":"particles","2":"wildfires","3":"0"},{"1":"set","2":"wildfires","3":"1739"},{"1":"set_color","2":"wildfires","3":"153"},{"1":"set_heading","2":"wildfires","3":"123"},{"1":"set_mass","2":"wildfires","3":"70"},{"1":"set_position","2":"wildfires","3":"94"},{"1":"set_size","2":"wildfires","3":"19"},{"1":"set_speed","2":"wildfires","3":"323"},{"1":"set_type","2":"wildfires","3":"162"},{"1":"spread_out","2":"wildfires","3":"6"},{"1":"temperature","2":"wildfires","3":"0"},{"1":"touching_dropdown","2":"wildfires","3":"175"},{"1":"undefined","2":"wildfires","3":"0"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
-<pre class="r"><code>table(blocktype_journey)</code></pre>
-<pre><code>## blocktype_journey
-##    0    1    2    5    6    7   12   17   19   20   25   32   46   59   70   87 
-##   54    2    2    2    3    2    2    1    2    2    1    1    1    1    1    2 
-##   94  100  123  128  135  138  153  162  175  181  191  192  194  211  242  263 
-##    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1    1 
-##  265  285  296  323  370  415  453  462  481  497  510  578  627  835 1531 1533 
-##    1    1    1    1    1    1    1    1    1    2    1    1    1    1    1    1 
-## 1540 1739 1740 4944 6807 
-##    1    1    1    1    1</code></pre>
+<pre class="r"><code>blocktype_journey</code></pre>
+<pre><code>##                     
+##                         0 diffusion wildfires
+##   apply_force_up        0         0         2
+##   apply_gravity         0         0         2
+##   apply_wind            0         0       263
+##   ask_each_particle     0       296       481
+##   attach                0       242         7
+##   blow                  0         0        87
+##   bounce_off            0       578       192
+##   come_down             0         0        17
+##   controls_if           0       835       191
+##   controls_when         0         0        46
+##   create_particles      0       627       497
+##   create_smoke          0         0         6
+##   distance_from_fire    0         0        12
+##   erase                 0        87        25
+##   for_each_particle     0       510         0
+##   for_smoke             0         0         6
+##   get_blown             0         0         5
+##   go                    0      1531      1740
+##   go_up                 0         0        20
+##   interact              0       285       194
+##   logic_negate          0        19         7
+##   logic_operation       0        59        32
+##   mouse_click           0      1533         5
+##   move                  0       415       497
+##   NULL                211      6807      4944
+##   particle_mass         0         0        20
+##   particles             1         1         0
+##   set                   0      1540      1739
+##   set_color             0       265       153
+##   set_heading           0       135       123
+##   set_mass              0       138        70
+##   set_position          0       128        94
+##   set_size              0       181        19
+##   set_speed             0       453       323
+##   set_type              0       100       162
+##   spread_out            0         0         6
+##   temperature           0       462         0
+##   touching_dropdown     0       370       175
+##   undefined             0        12         0</code></pre>
+</div>
+<div id="table-block-type-frequency-journey-diffusion" class="section level3">
+<h3>Table: Block type frequency (journey: diffusion)</h3>
 <pre class="r"><code># a table of the block types for journey &quot;diffusion&quot;
 diffusion_blocktypes &lt;- as.data.frame(blocktype_journey[, &#39;diffusion&#39;])
-View(diffusion_blocktypes)</code></pre>
+diffusion_blocktypes</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["blocktype_journey[, \"diffusion\"]"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"0","_rn_":"apply_force_up"},{"1":"0","_rn_":"apply_gravity"},{"1":"0","_rn_":"apply_wind"},{"1":"296","_rn_":"ask_each_particle"},{"1":"242","_rn_":"attach"},{"1":"0","_rn_":"blow"},{"1":"578","_rn_":"bounce_off"},{"1":"0","_rn_":"come_down"},{"1":"835","_rn_":"controls_if"},{"1":"0","_rn_":"controls_when"},{"1":"627","_rn_":"create_particles"},{"1":"0","_rn_":"create_smoke"},{"1":"0","_rn_":"distance_from_fire"},{"1":"87","_rn_":"erase"},{"1":"510","_rn_":"for_each_particle"},{"1":"0","_rn_":"for_smoke"},{"1":"0","_rn_":"get_blown"},{"1":"1531","_rn_":"go"},{"1":"0","_rn_":"go_up"},{"1":"285","_rn_":"interact"},{"1":"19","_rn_":"logic_negate"},{"1":"59","_rn_":"logic_operation"},{"1":"1533","_rn_":"mouse_click"},{"1":"415","_rn_":"move"},{"1":"6807","_rn_":"NULL"},{"1":"0","_rn_":"particle_mass"},{"1":"1","_rn_":"particles"},{"1":"1540","_rn_":"set"},{"1":"265","_rn_":"set_color"},{"1":"135","_rn_":"set_heading"},{"1":"138","_rn_":"set_mass"},{"1":"128","_rn_":"set_position"},{"1":"181","_rn_":"set_size"},{"1":"453","_rn_":"set_speed"},{"1":"100","_rn_":"set_type"},{"1":"0","_rn_":"spread_out"},{"1":"462","_rn_":"temperature"},{"1":"370","_rn_":"touching_dropdown"},{"1":"12","_rn_":"undefined"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 </div>
-<div id="a-table-of-the-block-types-for-journey-wildfires" class="section level1">
-<h1>a table of the block types for journey “wildfires”</h1>
-<p>wildfires_blocktypes &lt;- as.data.frame(blocktype_journey[, ‘wildfires’]) View(wildfires_blocktypes)</p>
-<div id="action-types-by-journey" class="section level3">
-<h3>Action types by journey</h3>
+<div id="table-block-type-frequency-journey-wildfires" class="section level3">
+<h3>Table: Block type frequency (journey: “wildfires”)</h3>
+<pre class="r"><code># a table of the block types for journey &quot;wildfires&quot;
+wildfires_blocktypes &lt;- as.data.frame(blocktype_journey[, &#39;wildfires&#39;])
+wildfires_blocktypes</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["blocktype_journey[, \"wildfires\"]"],"name":[1],"type":["int"],"align":["right"]}],"data":[{"1":"2","_rn_":"apply_force_up"},{"1":"2","_rn_":"apply_gravity"},{"1":"263","_rn_":"apply_wind"},{"1":"481","_rn_":"ask_each_particle"},{"1":"7","_rn_":"attach"},{"1":"87","_rn_":"blow"},{"1":"192","_rn_":"bounce_off"},{"1":"17","_rn_":"come_down"},{"1":"191","_rn_":"controls_if"},{"1":"46","_rn_":"controls_when"},{"1":"497","_rn_":"create_particles"},{"1":"6","_rn_":"create_smoke"},{"1":"12","_rn_":"distance_from_fire"},{"1":"25","_rn_":"erase"},{"1":"0","_rn_":"for_each_particle"},{"1":"6","_rn_":"for_smoke"},{"1":"5","_rn_":"get_blown"},{"1":"1740","_rn_":"go"},{"1":"20","_rn_":"go_up"},{"1":"194","_rn_":"interact"},{"1":"7","_rn_":"logic_negate"},{"1":"32","_rn_":"logic_operation"},{"1":"5","_rn_":"mouse_click"},{"1":"497","_rn_":"move"},{"1":"4944","_rn_":"NULL"},{"1":"20","_rn_":"particle_mass"},{"1":"0","_rn_":"particles"},{"1":"1739","_rn_":"set"},{"1":"153","_rn_":"set_color"},{"1":"123","_rn_":"set_heading"},{"1":"70","_rn_":"set_mass"},{"1":"94","_rn_":"set_position"},{"1":"19","_rn_":"set_size"},{"1":"323","_rn_":"set_speed"},{"1":"162","_rn_":"set_type"},{"1":"6","_rn_":"spread_out"},{"1":"0","_rn_":"temperature"},{"1":"175","_rn_":"touching_dropdown"},{"1":"0","_rn_":"undefined"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
 </div>
 </div>
-<div id="a-table-of-action-types-by-journey" class="section level1">
-<h1>a table of action types by journey</h1>
-<p>action_journey &lt;- (table(a2s_events<span class="math inline">\(actionType, a2s_events\)</span>journeyId)) colnames(action_journey)[colnames(action_journey) == “9”] &lt;- “diffusion” colnames(action_journey)[colnames(action_journey) == “44”] &lt;- “wildfires” as.data.frame(action_journey) action_journey</p>
 </div>
-<div id="a-table-of-the-action-types-for-journey-diffusion" class="section level1">
-<h1>a table of the action types for journey “diffusion”</h1>
-<p>diffusion_actiontypes &lt;- as.data.frame(action_journey[, ‘diffusion’]) View(diffusion_actiontypes)</p>
+<div id="exploratory-analysis---logs-video-viewing-data" class="section level2">
+<h2>Exploratory analysis - “logs” (video-viewing data)</h2>
+<div id="table-video-frequency" class="section level3">
+<h3>Table: video frequency</h3>
+<pre class="r"><code>table(a2s_logs_clean$Video)</code></pre>
+<pre><code>## 
+##        Cold Water Hot Water Default 
+##               180               243</code></pre>
 </div>
-<div id="a-table-of-the-block-types-for-journey-wildfires-1" class="section level1">
-<h1>a table of the block types for journey “wildfires”</h1>
-<p>wildfires_actiontypes &lt;- as.data.frame(action_journey[, ‘wildfires’]) View(wildfires_actiontypes) ```</p>
+<div id="table-video-frequency-1" class="section level3">
+<h3>Table: Video frequency</h3>
+<pre class="r"><code>freq(a2s_logs_clean$Video)</code></pre>
+<pre><code>## Frequencies  
+## a2s_logs_clean$Video  
+## Type: Character  
+## 
+##                           Freq   % Valid   % Valid Cum.   % Total   % Total Cum.
+## ----------------------- ------ --------- -------------- --------- --------------
+##              Cold Water    180     42.55          42.55     42.55          42.55
+##       Hot Water Default    243     57.45         100.00     57.45         100.00
+##                    &lt;NA&gt;      0                               0.00         100.00
+##                   Total    423    100.00         100.00    100.00         100.00</code></pre>
+</div>
+<div id="table-frequency-of-actions-by-video" class="section level3">
+<h3>Table: Frequency of actions by video</h3>
+<pre class="r"><code>ctable(
+  x = a2s_logs_clean$Video,
+  y = a2s_logs_clean$Action
+)</code></pre>
+<pre><code>## Cross-Tabulation, Row Proportions  
+## Video * Action  
+## Data Frame: a2s_logs_clean  
+## 
+## ------------------- -------- ------------- ------------- ------------ ------------- ------------ --------------
+##                       Action         pause          play     seek_end    seek_start       select          Total
+##               Video                                                                                            
+##          Cold Water             41 (22.8%)    47 (26.1%)   26 (14.4%)    57 (31.7%)    9 ( 5.0%)   180 (100.0%)
+##   Hot Water Default             64 (26.3%)    78 (32.1%)   33 (13.6%)    43 (17.7%)   25 (10.3%)   243 (100.0%)
+##               Total            105 (24.8%)   125 (29.6%)   59 (13.9%)   100 (23.6%)   34 ( 8.0%)   423 (100.0%)
+## ------------------- -------- ------------- ------------- ------------ ------------- ------------ --------------</code></pre>
+</div>
+<div id="table-frequency-of-actions-by-user" class="section level3">
+<h3>Table: Frequency of actions by user</h3>
+<pre class="r"><code>ctable(
+  x = a2s_logs_clean$Action,
+  y = a2s_logs_clean$userId
+)</code></pre>
+<pre><code>## Cross-Tabulation, Row Proportions  
+## Action * userId  
+## Data Frame: a2s_logs_clean  
+## 
+## ------------ -------- ----------- ----------- ---------- ------------ ----------- ------------- ---------- ---------- ----------- ---------- ---------- ---------- ---------- ------------ ------------ ------------ ---------- --------------
+##                userId          56         615        616          617         618           619        620        621         622        623        624        625        626          627          630          631        633          Total
+##       Action                                                                                                                                                                                                                                  
+##        pause             6 (5.7%)    8 (7.6%)   1 (1.0%)   10 ( 9.5%)    6 (5.7%)    27 (25.7%)   1 (1.0%)   1 (1.0%)    5 (4.8%)   1 (1.0%)   1 (1.0%)   2 (1.9%)   1 (1.0%)   11 (10.5%)   14 (13.3%)    9 ( 8.6%)   1 (1.0%)   105 (100.0%)
+##         play             7 (5.6%)   10 (8.0%)   1 (0.8%)   11 ( 8.8%)    7 (5.6%)    28 (22.4%)   1 (0.8%)   1 (0.8%)    5 (4.0%)   3 (2.4%)   1 (0.8%)   4 (3.2%)   2 (1.6%)   12 ( 9.6%)   18 (14.4%)   12 ( 9.6%)   2 (1.6%)   125 (100.0%)
+##     seek_end             0 (0.0%)    3 (5.1%)   0 (0.0%)    4 ( 6.8%)    2 (3.4%)    38 (64.4%)   0 (0.0%)   0 (0.0%)    0 (0.0%)   0 (0.0%)   0 (0.0%)   0 (0.0%)   0 (0.0%)    4 ( 6.8%)    4 ( 6.8%)    4 ( 6.8%)   0 (0.0%)    59 (100.0%)
+##   seek_start             0 (0.0%)    3 (3.0%)   0 (0.0%)    5 ( 5.0%)    2 (2.0%)    71 (71.0%)   0 (0.0%)   0 (0.0%)    0 (0.0%)   0 (0.0%)   0 (0.0%)   0 (0.0%)   0 (0.0%)    4 ( 4.0%)    4 ( 4.0%)   11 (11.0%)   0 (0.0%)   100 (100.0%)
+##       select             3 (8.8%)    2 (5.9%)   0 (0.0%)    4 (11.8%)    1 (2.9%)     2 ( 5.9%)   0 (0.0%)   0 (0.0%)    3 (8.8%)   2 (5.9%)   0 (0.0%)   2 (5.9%)   1 (2.9%)    4 (11.8%)    7 (20.6%)    2 ( 5.9%)   1 (2.9%)    34 (100.0%)
+##        Total            16 (3.8%)   26 (6.1%)   2 (0.5%)   34 ( 8.0%)   18 (4.3%)   166 (39.2%)   2 (0.5%)   2 (0.5%)   13 (3.1%)   6 (1.4%)   2 (0.5%)   8 (1.9%)   4 (0.9%)   35 ( 8.3%)   47 (11.1%)   38 ( 9.0%)   4 (0.9%)   423 (100.0%)
+## ------------ -------- ----------- ----------- ---------- ------------ ----------- ------------- ---------- ---------- ----------- ---------- ---------- ---------- ---------- ------------ ------------ ------------ ---------- --------------</code></pre>
+</div>
 </div>
 
 

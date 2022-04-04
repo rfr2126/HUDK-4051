@@ -1,3 +1,5 @@
+setwd("Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S")
+
 library(tidyverse)
 a2s_events <- read.csv("/Users/renatorusso/Desktop/TLTLAB/A2S Project/netlogo_events.csv")
 a2s_progress <- read.csv("/Users/renatorusso/Desktop/TLTLAB/A2S Project/netlogo_progress.csv")
@@ -73,31 +75,46 @@ View(wildfires_actiontypes)
 ## Logs ----------------------------------------------------
 # adding a column that will contain the type of action in the video (requires library(tibble))
 library(tibble)
-a2s_logs <- a2s_logs %>%
-  add_column(VideoAction = NA)
 
+# use this to identify the structure of the column of interest
 library(jsonlite)
 a2s_logs[1,6]
 
+# the code below parses the column "message", but it turns it into a separated list, 
+# which is not a good format for analysis
 videos_df <- map(a2s_logs$message, jsonlite::fromJSON)
-videos_df
+View(videos_df)
 
+# the code below turns the list above into a dataframe
 videos_df <- data.frame(matrix(unlist(videos_df),ncol=4,byrow=T))
 
-a2s_logs <- cbind(a2s_logs, videos_df)
+# the code below merges the original dataframe  with the newly one created above
+a2s_logs_clean <- cbind(a2s_logs, videos_df)
 View(a2s_logs)
-colnames(a2s_logs)[7] <- "Data_type"
-colnames(a2s_logs)[8] <- "Action"
-colnames(a2s_logs)[9] <- "Video"
-colnames(a2s_logs)[10] <- "Time"
 
-recode(a2s_logs$Video <- recode(a2s_logs$Video,
+# Now, I'm changing the column names to more descriptive ones
+colnames(a2s_logs_clean)[7] <- "Data_type"
+colnames(a2s_logs_clean)[8] <- "Action"
+colnames(a2s_logs_clean)[9] <- "Video"
+colnames(a2s_logs_clean)[10] <- "Time"
+
+# and, here, I'm "recoding" the video urls to make them more comprehensible: now,
+# each video is described by a name, instead of by the url:
+recode(a2s_logs_clean$Video <- recode(a2s_logs_clean$Video,
                                 'https://admin.a2s.fablevision-dev.com/assets/videos/u1_hot_water_default.mp4' = "Hot Water Default", 
                                 'https://admin.a2s.fablevision-dev.com/assets/videos/u1_cold_water.mp4' = "Cold Water"))
 
-       
+View(a2s_logs_clean)
+class(a2s_logs_clean$Time)
+x <- chron(times=a2s_logs_clean$Time)
+
+
+# then, I write a new data set, with a tidier structure:
+save(a2s_logs_clean, file = "/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_logs_clean.Rda")
+
 table(a2s_logs$Video)
 library(summarytools)
+
 freq(a2s_logs$Video)
 
 View(ctable(
@@ -109,8 +126,6 @@ ctable(
   x = a2s_logs$Action,
   y = a2s_logs$userId
 )
-
-hist(a2s_logs$Time)
 
 ctable(
   x = a2s_logs$Video,
