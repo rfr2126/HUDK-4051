@@ -1,0 +1,151 @@
+---
+title: "A2S exploratory analysis"
+author: "Renato Russo"
+output:
+  html_document:
+    df_print: paged
+    code_folding: hide
+---
+
+This is a document with ongoing exploratory analysis of data from the A2S project. The project is part of a larger research effort to create a constructionist environment for learning of "real world data for sustained investigations."
+The data consists of a log file and a table of video viewing data.
+
+```{r Loading data, echo=FALSE}
+#load("/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_events.Rda")
+load("C:\\Users\\Renato\\Desktop\\HUDK-4051\\A2S\\a2s_events.Rda")
+a2s_events <- a2s_events
+
+#load("/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_progress.Rda")
+load("C:\\Users\\Renato\\Desktop\\HUDK-4051\\A2S\\a2s_progress.Rda")
+a2s_progress <- a2s_progress
+
+#load("/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_logs.Rda")
+load("C:\\Users\\Renato\\Desktop\\HUDK-4051\\A2S\\a2s_logs.Rda")
+a2s_logs <- a2s_logs
+
+#load("/Users/renatorusso/Desktop/Ed.D./HUDK-4051/A2S/a2s_students.Rda")
+load("C:\\Users\\Renato\\Desktop\\HUDK-4051\\A2S\\a2s_students.Rda")
+a2s_students <- a2s_students
+
+library(summarytools)
+library(tidyverse)
+```
+
+## Exploratory analysis of the logfile
+### Table: Absolute frequency of journeys
+#### journeyId = 9: diffusion
+#### journeyId = 44: wildfires
+```{r}
+table(a2s_events$journeyId)
+```
+
+### Table: frequency of tasks
+#### taskId = 6 and 451: part of the diffusion journey
+#### taskId = 41 and 408: part of the wildfires journey
+```{r}
+table(a2s_events$taskId)
+
+```
+### Table: Absolute frequency of block types
+```{r}
+table(a2s_events$blockType)
+```
+### Table: Absolute frequency of block types after categorization
+```{r}
+table(a2s_events$blockTypeCategory)
+```
+
+### Table: Block type per journey (percentages add in the horizontal)
+```{r}
+ctable(
+  x = a2s_events$blockTypeCategory,
+  y = a2s_events$journeyId
+)
+```
+
+### Block types by journey
+# a table of block types by journey
+```{r}
+blocktype_journey <- (table(a2s_events$blockTypeCategory, a2s_events$journeyId))
+colnames(blocktype_journey)[colnames(blocktype_journey) == "9"] <- "diffusion"
+colnames(blocktype_journey)[colnames(blocktype_journey) == "44"] <- "wildfires"
+as.data.frame(blocktype_journey)
+
+table(blocktype_journey)
+```
+
+### a table of the block types for journey "diffusion"
+```{r}
+diffusion_blocktypes <- as.data.frame(blocktype_journey[, 'diffusion'])
+diffusion_blocktypes
+```
+
+### a table of the block types for journey "wildfires"
+```{r}
+wildfires_blocktypes <- as.data.frame(blocktype_journey[, 'wildfires'])
+wildfires_blocktypes
+```
+### Action types by journey
+# a table of action types by journey
+```{r}
+action_journey <- (table(a2s_events$actionType, a2s_events$journeyId))
+colnames(action_journey)[colnames(action_journey) == "9"] <- "diffusion"
+colnames(action_journey)[colnames(action_journey) == "44"] <- "wildfires"
+as.data.frame(action_journey)
+action_journey
+```
+
+### a table of the action types for journey "diffusion"
+```{r}
+diffusion_actiontypes <- as.data.frame(action_journey[, 'diffusion'])
+diffusion_actiontypes
+```
+
+### a table of the block types for journey "wildfires"
+```{r}
+wildfires_actiontypes <- as.data.frame(action_journey[, 'wildfires'])
+wildfires_actiontypes
+```
+
+## Exploratory analysis of the video data
+### Frequency table for each video
+```{r}
+library(summarytools)
+freq(a2s_logs$Video)
+```
+
+### Frequency of actions by video
+```{r}
+ctable(
+  x = a2s_logs$Video,
+  y = a2s_logs$Action
+)
+```
+
+```{r}
+ggplot(a2s_logs) +
+  geom_bar(mapping = aes(x = a2s_logs$Video), binwidth = 0.5)
+
+```
+```{r}
+ggplot(a2s_logs) +
+  geom_bar(mapping = aes(a2s_logs$Video, fill = a2s_logs$Action))
+
+```
+
+
+### Frequency table of action by user
+```{r}
+ctable(
+  x = a2s_logs$Action,
+  y = a2s_logs$userId
+)
+```
+
+### Frequency table of video by user
+```{r}
+ctable(
+  x = a2s_logs$Video,
+  y = a2s_logs$userId
+)
+```
