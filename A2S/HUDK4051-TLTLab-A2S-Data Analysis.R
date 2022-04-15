@@ -6,12 +6,6 @@ a2s_progress <- read.csv("/Users/renatorusso/Desktop/TLTLAB/A2S Project/netlogo_
 a2s_logs <- read.csv("/Users/renatorusso/Desktop/TLTLAB/A2S Project/netlogo_logs.csv")
 a2s_students <- read.csv("/Users/renatorusso/Desktop/TLTLAB/A2S Project/netlogo_students.csv")
 
-save(a2s_events, file = "a2s_events.Rda")
-save(a2s_progress, file = "a2s_progress.Rda") 
-save(a2s_logs, file = "a2s_logs.Rda")
-save(a2s_students, file = "a2s_students.Rda")
-
-
 # Windows
 a2s_events <- read.csv("C:\\Users\\Renato\\Desktop\\TLTLab\\netlogo_events.csv")
 a2s_progress <- read.csv("C:\\Users\\Renato\\Desktop\\TLTLab\\netlogo_progress.csv")
@@ -37,6 +31,7 @@ table(a2s_events$taskId)
 
 table(a2s_events$blockType)
 
+
 ### Block types by journey ----------------------------------------------------
 # a table of block types by journey
 blocktype_journey <- (table(a2s_events$blockType, a2s_events$journeyId))
@@ -55,6 +50,49 @@ View(diffusion_blocktypes)
 # a table of the block types for journey "wildfires"
 wildfires_blocktypes <- as.data.frame(blocktype_journey[, 'wildfires'])
 View(wildfires_blocktypes)
+
+## Adding a column for categories of block types-----
+
+table(a2s_events$actionType)
+
+table(a2s_events$blockTypeCategory)
+
+table(a2s_events$userId)
+
+a2s_events$blockTypeCategory = a2s_events$blockType
+
+a2s_events$blockTypeCategory <- recode(a2s_events$blockTypeCategory,
+                                       'ask_each_particle' = "Control", 
+                                       'attach' = "Action",
+                                       'blow' = "Action",
+                                       'bounce_off' = "Action",
+                                       'create_particles' = "Properties",
+                                       'create_smoke' = "Properties",
+                                       'interact' = "Action",
+                                       'move' = "Action",
+                                       'set' = "Set",
+                                       'set_color' = "Set",
+                                       'set_heading' = "Set",
+                                       'set_mass' = "Set",
+                                       'set_position' = "Set",
+                                       'set_size' = "Set",
+                                       'set_speed' = "Set",
+                                       'set_type' = "Set",
+                                       'controls_if' = "Control",
+                                       'controls_when' = "Control",
+                                       'apply_force_up' = "Apply",
+                                       'apply_gravity' = "Apply",
+                                       'apply_wind' = "Apply",
+                                       'controls_if' = "Control",
+                                       'controls_when' = "Control",
+                                       'erase' = "Action",
+                                       'logic_negate' = "Logic",
+                                       'logic_operation' = "Logic",
+                                       'temperature'= "Control"
+                                       )
+
+ggplot(a2s_events, aes(blockTypeCategory))
+
 
 ### Action types by journey ----------------------------------------------------
 # a table of action types by journey
@@ -131,3 +169,15 @@ ctable(
   x = a2s_logs$Video,
   y = a2s_logs$userId
 )
+
+#Joining events and logs ------
+events_logs <- full_join(
+  a2s_events,
+  a2s_logs)
+View(events_logs)
+
+save(events_logs, file = "events_logs.Rda")
+save(a2s_events, file = "a2s_events.Rda")
+save(a2s_progress, file = "a2s_progress.Rda") 
+save(a2s_logs, file = "a2s_logs.Rda")
+save(a2s_students, file = "a2s_students.Rda")
