@@ -122,17 +122,18 @@ ctable(
 )
 ```
 
+### Chart of views by video
 ```{r}
 ggplot(a2s_logs) +
   geom_bar(mapping = aes(x = a2s_logs$Video), binwidth = 0.5)
 
 ```
+### Chart of views by video with breakdown by actions/video
 ```{r}
 ggplot(a2s_logs) +
   geom_bar(mapping = aes(a2s_logs$Video, fill = a2s_logs$Action))
 
 ```
-
 
 ### Frequency table of action by user
 ```{r}
@@ -142,10 +143,29 @@ ctable(
 )
 ```
 
+### Chart of video views by users with breakdown by action taken on the video 
+```{r}
+ggplot(a2s_logs) +
+  geom_bar(mapping = aes(userId, fill = Action)) +
+  xlim(612, 628)
+
+ggplot(a2s_logs) +
+  geom_bar(mapping = aes(x = userId, y = stat(prop), fill = Action)) +
+  xlim(612, 628)
+```
+
+
 ### Frequency table of video by user
 ```{r}
 ctable(
   x = a2s_logs$Video,
   y = a2s_logs$userId
 )
+```
+
+### Chart of video view by user
+```{r}
+ggplot(a2s_logs) +
+  geom_bar(mapping = aes(userId, fill = Video)) +
+  xlim(612, 628) 
 ```
