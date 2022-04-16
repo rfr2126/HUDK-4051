@@ -1,0 +1,84 @@
+---
+title: "Individual Coding Exercise - Missing Data Imputation"
+output: html_document
+df_print: paged
+author: Renato Russo
+date: April, 15, 2022
+---
+
+# Getting and preparing the data
+```{r}
+library(datasets)
+data(iris)
+head(iris)
+```
+
+# MCAR
+```{r}
+iris_MCAR <- iris
+
+missing_fraction <- 0.3 #fraction of missing variables 
+N <- nrow(iris_MCAR)
+
+is.na(iris_MCAR[sample.int(N, missing_fraction*N), "Sepal.Length"]) <- TRUE
+
+iris_MCAR
+```
+
+# MAR
+##logit and inverse logistic functions
+```{r}
+logit <- function(x){log(x/(1 - x))}
+invlogit <- function(x){1/(1 + exp(-x))}
+```
+
+##generate a Bernoulli distribution where p is 0.3
+```{r}
+m.SW <- mean(iris$Sepal.Width)
+pmiss <- invlogit(iris$Sepal.Width -m.SW + logit(0.3))
+hist(pmiss) 
+
+iris_MAR <- iris
+N <- nrow(iris_MAR)
+is.na(iris_MAR$Sepal.Length[runif(N) < pmiss]) <- TRUE
+```
+
+#Deletion methods
+##Listwise deletion
+iris_MCAR_listwise <- iris_MCAR[complete.cases(iris_MCAR),]
+nrow(iris_MCAR_listwise)
+
+##Pairwise deletion
+mean(iris_MCAR$Sepal.Length, na.rm = TRUE)
+sd(iris_MCAR$Sepal.Length, na.rm = TRUE)
+
+#Single imputation
+##Simple imputation
+```{r}
+iris_MCAR_mean <- iris_MCAR
+mi <- mean(iris_MCAR$Sepal.Length, na.rm = TRUE)
+iris_MCAR_mean$Sepal.Length[is.na(iris_MCAR$Sepal.Length)] <- mi
+iris_MCAR_mean
+```
+
+##Regression imputation/conditional mean imputation
+```{r}
+iris_MAR_regression <- iris_MAR
+lm_model <- lm(Sepal.Length ~ Sepal.Width, iris_MAR_regression)
+summary(lm_model)
+```
+
+###Broadcasting the Beta and the intercept to all missing Sepal length
+```{r}
+iris_MAR_regression$Sepal.Length[is.na(iris_MAR$Sepal.Length)] <- -0.08 * iris_MAR_regression$Sepal.Width[is.na(iris_MAR$Sepal.Length)] + 6.085
+
+iris_MAR_regression
+```
+##Hotdeck imputation or nearest neighbors
+```{r}
+#install.packages("missMethods")
+library(missMethods)
+iris_MAR_hotdeck <- iris_MAR
+impute_hot_deck_in_classes(iris_MAR_hotdeck, c("Sepal.Width", "Petal.Length", "Petal.Width", "Species"))
+
+```

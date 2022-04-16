@@ -1,0 +1,67 @@
+---
+title: "Individual Coding Exercise - Knowledge Inference"
+output: html_document
+df_print: paged
+author: Renato Russo
+date: April, 16, 2022
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Getting and preparing the data:
+```{r}
+ADL <- read.table(
+  "http://publicifsv.sund.ku.dk/~kach/scaleval_IRT/ADL.txt", 
+  sep=' ', 
+  header = TRUE,
+  na.strings = '.')
+names(ADL)
+
+comp <- complete.cases(ADL)
+ADL.comp <- ADL[comp,]
+items <- ADL.comp[,-1]
+```
+
+Installing the ltm package (used for "Analysis of multivariate dichotomous and polytomous data using latent trait models under the Item Response Theory approach")
+```{r}
+install.packages("ltm", repos="http://cran.rstudio.com/")
+library(ltm)
+```
+
+Overview of items and item-total correlations. Fitting 1PL (or Rasch model) using the code below:
+
+```{r}
+fit1 <- rasch(items)
+coef(fit1, prob = T, order = T)
+```
+
+Getting all ICCs in a plot:
+```{r}
+plot(fit1, type = "ICC")
+```
+Evaluating model fit in dichotomus IRT models using ltm()
+```{r}
+GoF.rasch(fit1, B=99, seed=1862)
+```
+
+Evaluating item fit in dichotomus IRT models using ltm()
+```{r}
+if1 <- item.fit(fit1, 
+                  G = 2, 
+                  FUN = mean, 
+                  simulate.p.value = TRUE, 
+                  B = 99)
+if1
+```
+
+Item Information Functions
+```{r}
+plot(fit1, type = "IIC")
+```
+
+Test Information functions
+```{r}
+plot(fit1, type = "IIC", items=0)
+```
