@@ -1,0 +1,126 @@
+---
+title: "Mini Learning Analytics Assignment - Classification/Prediction"
+output: html_document
+df_print: paged
+author: Renato Russo
+date: May 6, 2022
+---
+# About this project
+This notebook is an assignment on learning analytics that explores the concepts and practice of prediction and classification. It uses a dataset provided by a university's office of the registrar. The goal is to create predictions of which students are more or less likely to drop out of which courses to which they enroll at the beginning of a semester.
+Previous work by Baker et al. (2019) proposes a model that incorporated 23 features that include disciplinary and behavioral factors, as well as attendance and grades, among others. One of those factors is the variance in grades across the course of the year. Another study on drop-out rates, now focusing on higher education, found that being an international students had a higher retention rates than local students (de Freitas et al., 2015). Based on those references, I chose to select entrance test score and nationality status as two features to explore in my initial investigation of possible models that can satisfactorily predict drop out rates in the present data set. I'll employ a Naive Bayes model for this analysis.
+
+# Exploratory analysis
+
+```{r}
+data <- read.csv("drop-out.csv")
+View(data)
+
+```
+
+## Number of observations
+```{r}
+str(data)
+```
+
+## Size of subsets
+Identifying the size of subsets for international and local students
+```{r}
+table(data$international)
+```
+
+I notice that the number of cases per group are very different, but the local group is a little less than 6 times larger than then the international one, which seems to be an acceptable ratio.
+
+## Entrance exam scores
+Plotting entrance exam score with limits for the x and y axes due to the absence of data beyond those limits:
+```{r}
+library(ggplot2)
+
+ggplot(data) +
+  geom_bar(mapping = aes(x = data$entrance_test_score)) +
+  ylim(0,100) +
+  xlim(0, 115)
+
+ggplot(data) +
+  geom_bar(mapping = aes(x = data$entrance_test_score)) +
+  ylim(0,100) +
+  xlim(0, 115) +
+  facet_grid(cols = vars(international))
+
+
+```
+## Completion rate for each nationality status
+```{r}
+xtabs(~complete+international, data = data)
+
+```
+
+It seems that there is not much difference between the completion rates for international and national students. However, I'll keep working on the analysis because the literature has shown an example in which this was an important feature in predicting drop-out rates.
+
+## Plotting the three variables together:
+```{r}
+library(tidyverse)
+data %>% 
+ggplot(aes(x=complete, y=entrance_test_score, fill=international)) +
+geom_boxplot() +
+  ggtitle("Entrance test score by international and complete statuses")
+```
+
+The chart shows that the entrance test score seems to vary more acutely among national than international students according to their completion status.
+
+# Model implementation
+## Naive Bayes
+```{r}
+install.packages("naivebayes", repos = "http://cran.us.r-project.org")
+library(naivebayes)
+```
+
+### Creating the train and test data sets
+```{r}
+data$international <- recode(data$international, 'no'=0, 'yes'=1)
+
+library(caret)
+
+set.seed(10000)
+trainIndex=createDataPartition(data$complete, p=0.7)$Resample1
+train=data[trainIndex, ]
+test=data[-trainIndex, ]
+
+#checking the balance between the train data and the actual data:
+print(table(data$complete))
+print(table(train$complete))
+
+#making the classifier:
+NBclassifier=naive_bayes(complete~entrance_test_score+international,usekernel=T, data=train)
+
+#Prediction on the dataset
+NB_Predictions=predict(NBclassifier,data)
+
+
+#Confusion matrix to check accuracy
+table(NB_Predictions,data$complete)
+```
+The table shows that the model is able to classify 7 out of 1724 "no" cases correctly, and 4132 out of 4137 yes correctly. This means that our model is substantially more accurate in predicting cases of completion than cases of drop out.
+
+# Trying a different model
+I will experiment changing one of the features in the model. Although I didn't find support for this in the literature (yet), I have a hunch that taking too many courses might also be a factor affecting drop-out rate, so I try to create a model with that variable.
+
+```{r}
+#making the classifier:
+NewNBclassifier=naive_bayes(complete~entrance_test_score+courses_taken,usekernel=T, data=train)
+
+#Prediction on the dataset
+NewNB_Predictions=predict(NewNBclassifier,data)
+
+
+#Confusion matrix to check accuracy
+table(NewNB_Predictions,data$complete)
+```
+Now, the table shows that the model is better at predicting "no" than the previous (less than 1% vs around 5% in predicting right), but worse at predicting "yes" (from close to 0% to 1%). Those numbers suggest that the second model is slightly better.
+
+
+--
+References:
+
+
+Baker, R. S., Berning, A. W., Gowda, S. M., Zhang, S., & Hawn, A. (2019). Predicting K-12 dropout. Journal of Education for Students Placed at Risk, 25(1), 28-54.
+De Freitas, S., Gibson, D., Du Plessis, C., Halloran, P., Williams, E., Ambrose, M., ... & Arnab, S. (2015). Foundations of dynamic learning analytics: Using university student data to increase retention. British journal of educational technology, 46(6), 1175-1188.
